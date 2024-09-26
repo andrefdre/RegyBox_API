@@ -12,7 +12,7 @@ class RegyBox_API:
         self.url = "https://www.regibox.pt/app/app_nova/php"
         self.session = requests.Session()
 
-    def login(self):
+    def login(self, email, password):
         """
         This function is used to login in the Regybox APP
         :param username: The username of the user
@@ -21,12 +21,12 @@ class RegyBox_API:
         url = self.url + "/login/scripts/verifica_acesso.php?lang=pt"
         data = {
             "id_box": 148,
-            "login": "andrefdre@gmail.com",
-            "password" : "@ForsakenPT123"
+            "login": email,
+            "password" : password
         }
         response = self.session.post(url , data=data)
         if response.status_code == 200:
-            return response.text
+            return response.json()
         return response.text
     
 
