@@ -6,15 +6,12 @@ from bs4 import BeautifulSoup
 import datetime
 import time
 
-# https://www.regibox.pt/app/app_nova/php/aulas/marca_aulas.php?id_aula=15890&data=2024-09-27&source=mes&ano=2024&id_rato=552&x=355ae92f6707de54d1da95f0a5de&z=
-# id_box 148
-# id_user 552
-# user 89e15b552bf8145d480faef2491affc8041909b148b5f5c56f
 
 class RegyBox_API:
     def __init__(self):
         self.url = "https://www.regibox.pt/app/app_nova/php"
         self.session = requests.Session()
+        # Dictionary to convert the month to a number
         self.monthh_dict = {
             "Janeiro": 1,
             "Fevereiro": 2,
@@ -30,6 +27,7 @@ class RegyBox_API:
             "Dezembro": 12
         }
 
+        #TODO Make it work on saturdays
         self.class_time_array = [
             "07:00 - 07:45",
             "08:00 - 08:45",

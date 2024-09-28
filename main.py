@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from Class_API import RegyBox_API
+from Regybox_API import RegyBox_API
 
 # This is the main function
 # Box id 148 for Crossfit Feira
