@@ -9,7 +9,7 @@ def main():
     api = RegyBox_API()
     api.login(148, "andrefdre@gmail.com" , "@ForsakenPT123")
     #print(api.get_classes_for_the_day())
-    api.get_classes_for_the_day("2024-09-25")
+    api.get_classes_for_the_day("2024-10-1")
     #api.join_class("2024-09-27" , 15890)
 
 

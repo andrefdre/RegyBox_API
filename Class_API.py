@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import re
 import requests
 from bs4 import BeautifulSoup
 import datetime
@@ -29,6 +30,17 @@ class RegyBox_API:
             "Dezembro": 12
         }
 
+        self.class_time_array = [
+            "07:00 - 07:45",
+            "08:00 - 08:45",
+            "10:00 - 10:45",
+            "12:15 - 13:00",
+            "16:30 - 17:30",
+            "17:30 - 18:30",
+            "18:30 - 19:30",
+            "19:30 - 20:30"
+        ]
+
     def login(self, box_id , email, password):
         """
         This function is used to login in the Regybox APP
@@ -48,7 +60,7 @@ class RegyBox_API:
         
     
 
-    def join_class (self, date, id_aula):
+    def join_class (self, date, id_aula , x):
         """
         This function is used to join a class in the Regybox APP
         :param class_id: The class id in the format "XXXXX"
@@ -75,7 +87,7 @@ class RegyBox_API:
                 "source": "mes",
                 "ano": datetime.now().year,
                 "id_rato": 552,
-                "x": "355ae92f6707de54d1da95f0a5de"
+                "x": x
                 
             }
             response = self.session.get(url , params=params , cookies=cookies)
@@ -84,7 +96,7 @@ class RegyBox_API:
             print("Class is full")
             return 
     
-    def remove_class (self):
+    def remove_class (self ,date , id_aula):
         """
         This function is used to remove a class in the Regybox APP
         :param class_id: The class id in the format "XXXXX"
@@ -102,15 +114,15 @@ class RegyBox_API:
         }
 
         params = {
-            "id_aula": 15890,
-            "data": "2024-09-27",
+            "id_aula": id_aula,
+            "data": date,
             "source": "mes",
             "ano": 2024,
             "id_rato": 552,
             "z": ""
             
         }
-        response = self.session.get(url , params=params , headers=headers)
+        response = self.session.get(url , params=params , cookies=cookies)
         return response.text
 
     def get_classes_for_the_day(self,date):
@@ -118,11 +130,14 @@ class RegyBox_API:
         This function is used to get the classes of a specific date
         :param date: The date of the class in the format "YYYY-MM-DD"
         """
+
+        # Get the unix time of the date
         year, month, day = date.split("-")
         date_time = datetime.datetime(int(year), int(month), int(day), 11, 00)
         unix_time = int(time.mktime(date_time.timetuple()))*1000
-        print(unix_time)
+ 
         url = self.url + "/aulas/aulas.php"
+
         params = {
             "valor1": unix_time,
             "source": "mes",
@@ -136,6 +151,7 @@ class RegyBox_API:
         }
         response = self.session.get(url , params=params , cookies=cookies)
         soup =BeautifulSoup(response.text, "html.parser")
+
         # Part of the code that will confirm if the requested date is the same as the received date
         date_confirmation = soup.find_all("div")[0].string.strip()
         _ , day_confirmation , _ , month_confirmation , _ , year_confirmation = date_confirmation.split(" ")
@@ -145,12 +161,42 @@ class RegyBox_API:
                 month_confirmation = self.monthh_dict[loop_month]
                 break
 
-        if not (day == day_confirmation and int(month) == month_confirmation and year == year_confirmation):
+        if not (int(day) == int(day_confirmation) and int(month) == int(month_confirmation) and int(year) == int(year_confirmation)):
             print(f"Error, the date {date} is not the same as the date {year_confirmation}-{month_confirmation}-{day_confirmation}")
             return
+        
+        # Extract the classes of the day
 
+        classes_of_the_day= []
 
+        # Print the classes of the day
         print(f"Classes for the day {year}-{month}-{day}")
+        for class_time in self.class_time_array:
+            for class_info in soup.find_all('div',string=re.compile(class_time)):
+                time_of_class = class_info.string
+                students_in_class , _ , total_students_allowed = class_info.find_next("div").string.split(" ")
+
+                if class_info.find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("button") != None and int(students_in_class) < int(total_students_allowed):
+                    can_join_class = True
+                    class_id = class_info.find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("button").attrs["onclick"].split("?")[2].split("&")[0].split("=")[1]
+                    x = class_info.find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("button").attrs["onclick"].split("?")[2].split("&")[5].split("=")[1].split("'")[0]
+                else:
+                    can_join_class = False
+                    class_id = None
+                    x = None
+                class_information_structure = {
+                    "time": time_of_class,
+                    "students_in_class": students_in_class,
+                    "total_students": total_students_allowed,
+                    "can_join_class": can_join_class,
+                    "class_id": class_id,
+                    "x": x
+                }
+                classes_of_the_day.append(class_information_structure)
+                print(f"Time: {time_of_class} - Students, {students_in_class}/{total_students_allowed} , able to join class {can_join_class} , Class ID: {class_id} , x: {x}")
+        
+        return date,  classes_of_the_day
+
     
     def get_class_info(self, date , class_number):
         """
