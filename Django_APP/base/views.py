@@ -3,8 +3,8 @@ from django.shortcuts import render
 def home(request): 
     return render(request, "home.html") 
   
-def projects(request): 
-    return render(request, "projects.html") 
+def faqs(request): 
+    return render(request, "faqs.html") 
   
-def contact(request): 
-    return render(request, "contact.html")
+def about(request): 
+    return render(request, "about.html")
