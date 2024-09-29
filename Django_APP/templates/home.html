@@ -1,5 +1,6 @@
-{% include 'navbar.html' %} 
+<!-- {% include 'navbar.html' %} 
 {% load static %} 
+
 <link rel="stylesheet" href="{% static 'styles/style.css' %}"> 
 <title>Home</title> 
 <section class="home"> 
@@ -16,4 +17,25 @@
   
             </font> 
         </center> 
-</section>
+</section> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+  <link rel="stylesheet" href="{% static 'styles/style.css' %}"> 
+</head>
+<body>
+    {% load static %} 
+    {% include 'navbar.html' %} 
+
+
+
+  {% block content %}
+  {% endblock %}
+</div>
+</body>
+</html>
