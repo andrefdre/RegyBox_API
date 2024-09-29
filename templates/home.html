@@ -18,7 +18,7 @@
         <p class="lead mb-4">Regybox Scheduler was created to solve the hassle of constantly scheduling Crossfit classes and the frustration of missing out when classes are full due to forgetting to book on time. Our app automatically registers you for classes, so you never have to worry about losing your spot again—focus on your training, and let us handle the rest.</p>
         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
           <button type="button" class="btn btn-primary btn-lg px-4 me-sm-3">Go to app</button>
-          <button type="button" class="btn btn-outline-secondary btn-lg px-4">Source Code</button>
+          <button type="button" onclick="location.href = 'https://github.com/andrefdre/RegyBox_API';" class="btn btn-outline-secondary btn-lg px-4">Source Code</button>
         </div>
       </div>
       <div class="overflow-hidden" style="max-height: 30vh;">
@@ -30,10 +30,12 @@
 
     <div class="container px-4 py-5" id="custom-cards">
       <h2 class="pb-2">Features</h2>
+
+      <p>Discover the core features that make Regybox Scheduler the ultimate tool for managing your Crossfit classes. From seamless scheduling to flexible options and keeping you on track, we've designed our app to simplify your fitness routine so you can focus on what matters most — your training.</p>
   
       <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
-        <div class="col">
-          <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url('{% static 'images/unsplash-photo-1.jpg' %}');">
+        <div class="col img__wrap">
+          <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg img__img" style="background-image: url('{% static 'images/unsplash-photo-1.jpg' %}');">
             <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
               <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Easy Scheduling</h2>
               <ul class="d-flex list-unstyled mt-auto">
@@ -43,6 +45,7 @@
               </ul>
             </div>
           </div>
+          <p class="img__description rounded-5">Automate your Crossfit class bookings with just a few clicks. No more last-minute rush or missing out on full classes.</p>
         </div>
   
         <div class="col img__wrap">
@@ -59,8 +62,8 @@
           <p class="img__description rounded-5">Choose the classes that best fit your schedule, whether it’s early morning, afternoon, or evening sessions. You decide when to train.</p>
         </div>
   
-        <div class="col">
-          <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url({% static 'images/unsplash-photo-3.jpg' %});">
+        <div class="col img__wrap">
+          <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg img__img" style="background-image: url({% static 'images/unsplash-photo-3.jpg' %});">
             <div class="d-flex flex-column h-100 p-5 pb-3 text-shadow-1">
               <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Stay on Track</h2>
               <ul class="d-flex list-unstyled mt-auto">
@@ -70,6 +73,7 @@
               </ul>
             </div>
           </div>
+          <p class="img__description rounded-5">Our app keeps you updated with reminders and notifications, ensuring you never miss a workout again.</p>
         </div>
       </div>
     </div>

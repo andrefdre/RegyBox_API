@@ -1,4 +1,12 @@
 /* navbar */
+  .fill{
+
+    height: 100vh;
+  }
+
+  html {
+    height: 100%;
+    }
   
   .form-control-dark {
     color: #fff;
@@ -98,7 +106,7 @@
     left: 0px;
     right: 0px;
     margin: 1.5rem;
-    background: rgba(42, 51, 56, 0.199);
+    background-color: rgba(13, 16, 17, 0.568);
     color: #fff;
     visibility: hidden;
     opacity: 0;
@@ -117,4 +125,33 @@
     .rounded-lg-3 { border-radius: .3rem; }
   }
   
+
+  /* pagina de login */
+
+  .form-signin {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+  }
+  
+  .form-signin .checkbox {
+    font-weight: 400;
+  }
+  
+  .form-signin .form-floating:focus-within {
+    z-index: 2;
+  }
+  
+  .form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  
+  .form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
   
