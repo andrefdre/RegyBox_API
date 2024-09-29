@@ -1,24 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from .Regybox_API import RegyBox_API
+from django.http import JsonResponse
 
-  
-def home(request): 
-    return render(request, "home.html") 
-  
-def faqs(request): 
-    return render(request, "faqs.html") 
-  
-def about(request): 
-    return render(request, "about.html")
-
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('dashboard')
-        else:
-            return render(request, 'login.html', {'error': 'Credenciais inválidas'})
-    return render(request, 'login.html')
+def serve_react_app(request):
+    # Serve your React app's index.html file
+    return render(request, 'index.html')  # Assuming 'index.html' is your React entry point

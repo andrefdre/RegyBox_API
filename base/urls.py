@@ -1,9 +1,8 @@
-from django.urls import path 
-from . import views 
+from django.urls import path, include
+from django.views.generic import TemplateView
+
   
 urlpatterns = [ 
-    path("", views.home, name="home"), 
-    path("About/", views.about, name="about"), 
-    path("FAQs/", views.faqs, name="faqs"),
-    path('login/', views.login_view, name='login'),
+    path('api/', include('your_app.api.urls')),  # API endpoints for Django
+    path('', TemplateView.as_view(template_name='index.html')),  # Serve your React app
 ]
