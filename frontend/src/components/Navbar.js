@@ -1,7 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'; // Usado para navegação
+import axios from 'axios';
+import Cookies from 'js-cookie'; // Import the js-cookie library
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const navigate = useNavigate();
+
+    // Check if user is authenticated when the component mounts
+    useEffect(() => {
+        const checkAuth = async () => {
+            const token = Cookies.get('authToken');
+            if (token) {
+                try {
+                    // Replace with your actual API endpoint
+                    const response = await axios.get('/api/auth/check', {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    if (response.status === 200) {
+                        setIsLoggedIn(true); // User is logged in
+                    }
+                } catch (error) {
+                    console.error('Authentication check failed', error);
+                    setIsLoggedIn(false);
+                }
+            }
+        };
+
+        checkAuth();
+    }, []);
+
+    const handleLogout = () => {
+        Cookies.remove('authToken'); // Remove the cookie
+        setIsLoggedIn(false); // Update local state
+        navigate('/'); // Redirect to home
+    };
+
     return (
         <header className="p-3 bg-dark text-white">
             <div className="container">
@@ -15,8 +50,15 @@ const Navbar = () => {
                         <li><Link to="/About" className="nav-link px-2 text-white">About</Link></li>
                     </ul>
                     <div className="text-end">
-                        <Link to="/login" className="btn btn-outline-light me-2">Login</Link>
-                        <Link to="/signup" className="btn btn-warning">Sign-up</Link>
+                        {isLoggedIn ? (
+                            <>
+                                <span className="me-2">Welcome, User!</span>
+                                <Link to="/dashboard" className="btn btn-warning me-2">Dashboard</Link>
+                                <Link to="#" className="btn btn-warning me-2" onClick={handleLogout}>Logout</Link>
+                            </>
+                        ) : (
+                            <Link to="/login" className="btn btn-warning me-2">Login</Link>
+                        )}
                     </div>
                 </div>
             </div>

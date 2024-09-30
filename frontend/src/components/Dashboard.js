@@ -1,17 +1,18 @@
 // Dashboard.js
 import React from 'react';
-import { Link, Route, Switch } from 'react-router-dom';
-import BookClass from './BookClass'; // Create this component
-import ViewBookedClasses from './ViewBookedClasses'; // Create this component
+import { Link, Route, Routes } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+// import BookClass from './BookClass'; // Create this component
+// import ViewBookedClasses from './ViewBookedClasses'; // Create this component
+import DashboardCalendar from './DashboardCalendar'; // Create this component
 
 
 const Dashboard = () => {
   return (
-    <div className="container body p-5">
-      <div className="container-fluid">
+    <div className="container body">
         <div className="row">
           {/* Left Sidebar */}
-          <nav id="sidebarMenu" className="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+          <nav id="sidebarMenu" className="p-3 col-md-3 col-lg-2 d-md-block bg-light sidebar vh-100">
             <div className="position-sticky">
               <ul className="nav flex-column">
                 <li className="nav-item">
@@ -31,16 +32,19 @@ const Dashboard = () => {
           {/* Main Content */}
           <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div className="content">
-              <Switch>
-                <Route path="/dashboard/book-class" component={BookClass} />
-                <Route path="/dashboard/view-booked-classes" component={ViewBookedClasses} />
-                {/* You can add more routes here */}
-              </Switch>
+            <Routes>
+              <Route path="/dashboard/book-class" element={<DashboardCalendar />} />
+      
+              <Route path="/dashboard/view-booked-classes">
+                {/* You can add your ViewBookedClasses component here */}
+              </Route>
+              <Route path="/">
+              </Route>
+            </Routes>
             </div>
           </main>
         </div>
       </div>
-    </div>
   );
 };
 

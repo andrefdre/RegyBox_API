@@ -52,10 +52,13 @@ class RegyBox_API:
             "password" : password
         }
         response = self.session.post(url , data=data)
-        print(response.text)
+        if response.text.find("Acesso negado") != -1:
+            return None
         if response.status_code == 200:
             self.regybox_user_cookie = response.text.split("&")[0].split("=")[2]
             return self.regybox_user_cookie
+        else:
+            return None
         
     
 

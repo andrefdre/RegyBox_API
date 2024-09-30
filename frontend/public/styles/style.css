@@ -4,9 +4,12 @@
     height: 100vh;
   }
 
-  html {
-    height: 100%;
-    }
+  html, body {
+    height: 100%; /* Make sure the html and body elements fill the viewport */
+    margin: 0;    /* Remove default margin */
+}
+
+
   
   .form-control-dark {
     color: #fff;
@@ -88,10 +91,14 @@
 
   .background {
     background-color: rgba(0, 0, 0, .1);
+    display: flex;            /* Use flexbox to align items */
+    flex-direction: column;  /* Align items in a column */
+    min-height: 100vh;      /* Ensure the body takes at least the full height of the viewport */
   }
 
   .body {
     background-color: #f8f9fa;
+    min-height: 100vh;      /* Ensure the body takes at least the full height of the viewport */
   }
 
   .img__wrap {
@@ -124,6 +131,13 @@
   @media (min-width: 992px) {
     .rounded-lg-3 { border-radius: .3rem; }
   }
+
+  @media (min-width: 576px) and (max-width: 991px) {
+    .container{
+      margin-left : 0px !important;
+      margin-right: 0px !important;
+    }
+  }
   
 
   /* pagina de login */
@@ -155,3 +169,51 @@
     border-top-right-radius: 0;
   }
   
+  /*
+ * Sidebar
+ */
+
+@media (min-width: 768px) {
+  .sidebar .offcanvas-lg {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 48px;
+  }
+  .navbar-search {
+    display: block;
+  }
+}
+
+.sidebar .nav-link {
+  font-size: .875rem;
+  font-weight: 500;
+}
+
+.sidebar .nav-link.active {
+  color: #2470dc;
+}
+
+.sidebar-heading {
+  font-size: .75rem;
+}
+
+#sidebarMenu{
+  background-color: rgba(0, 0, 1, .1) !important;
+}
+
+/* Calendar */
+.classes-list {
+  margin-top: 20px;
+}
+
+.classes-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.classes-list li {
+  background: #f8f9fa;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+}

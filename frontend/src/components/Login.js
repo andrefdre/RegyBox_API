@@ -1,30 +1,39 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
+import Cookies from 'js-cookie'; // Import the js-cookie library
+import { useNavigate } from 'react-router-dom';
+
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [errorMessages, setErrorMessages] = useState([]); // For error messages
+  const navigate = useNavigate();
+  
+    const handleLogin = async (e) => {
+      e.preventDefault();
 
-  const handleSubmit = (event) => {
-    event.preventDefault(); // Prevent the default form submission behavior
-    // Handle login logic here, e.g., send a POST request to your backend
-    // Example:
-    // fetch('/your-login-url', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({ email, password, rememberMe }),
-    // })
-    // .then(response => {
-    //   // Handle response
-    // })
-    // .catch(error => {
-    //   setErrorMessages(['Invalid credentials']); // Add error handling
-    // });
-  };
+      // Clear previous errors
+      setErrorMessages([]);
+  
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/api/login/', {
+          email,
+          password
+        });
+        const token = response.data.token;
+        // Set the cookie
+        Cookies.set('authToken', token, { expires: 7 }); // Store cookie for 7 days
+
+        setErrorMessages([]);
+        navigate('/dashboard'); // Navigate to another page in your React app
+      } catch (err) {
+        setErrorMessages(err.response.data.error || 'Login failed');
+      }
+    };
 
   return (
     <div className="container body p-5">
@@ -38,7 +47,7 @@ const Login = () => {
         )}
         <img className="mb-4" src={`${process.env.PUBLIC_URL}/images/logo.svg`} alt="Logo" width="72" height="57" />
         <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleLogin}>
           <div className="form-floating">
             <input
               type="email"
