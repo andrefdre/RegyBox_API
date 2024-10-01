@@ -1,39 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
-import Cookies from 'js-cookie'; // Import the js-cookie library
 import { useNavigate } from 'react-router-dom';
 
 
-
-const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const Login = (props) => {
+  //Still not implemented
   const [rememberMe, setRememberMe] = useState(false);
   const [errorMessages, setErrorMessages] = useState([]); // For error messages
   const navigate = useNavigate();
-  
-    const handleLogin = async (e) => {
-      e.preventDefault();
 
-      // Clear previous errors
-      setErrorMessages([]);
-  
-      try {
-        const response = await axios.post('http://127.0.0.1:8000/api/login/', {
-          email,
-          password
-        });
-        const token = response.data.token;
-        // Set the cookie
-        Cookies.set('authToken', token, { expires: 7 }); // Store cookie for 7 days
+  const { isLoggedIn, setIsLoggedIn} = props;
 
+  useEffect(() => {
+    if (isLoggedIn) navigate("/dashboard");
+  });
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  // Create the submit method.
+
+  const handleLogin = async (ev) => {
+    // ev.preventDefault();
+    const email = ev.target.email.value;
+    const password = ev.target.password.value;
+    const formData = { email: email, password: password };
+    try{
+      const res = await axios.post('http://127.0.0.1:8000/api/login', formData);
+      const data = res.data;
+      if (data.success === true) {
         setErrorMessages([]);
-        navigate('/dashboard'); // Navigate to another page in your React app
-      } catch (err) {
-        setErrorMessages(err.response.data.error || 'Login failed');
-      }
-    };
+        setIsLoggedIn(true);
+        setEmail(email);
+        navigate("/dashboard");
+    }
+    }
+    catch (err) {
+      if (err.response.status === 401) setErrorMessages(['Invalid credentials']);
+    } 
+  };
 
   return (
     <div className="container body p-5">

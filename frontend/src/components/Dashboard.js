@@ -1,5 +1,6 @@
 // Dashboard.js
-import React from 'react';
+import {useEffect, useState} from "react";
+import axios from "axios";
 import { Link, Route, Routes } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import BookClass from './BookClass'; // Create this component
@@ -8,8 +9,25 @@ import DashboardCalendar from './DashboardCalendar'; // Create this component
 
 
 const Dashboard = () => {
+  const [message, setMessage] = useState('');
+  useEffect(() => {
+     if(localStorage.getItem('access_token') === null){                   
+         window.location.href = '/login'
+     }
+     else{
+      (async () => {
+        try {
+          const {data} = await axios.get('http://localhost:8000/home/', {headers: {'Content-Type': 'application/json'}});
+          setMessage(data.message);
+       } catch (e) {
+         console.log('not auth')
+       }
+      })()};
+  }, []);
+
   return (
     <div className="container body">
+        <h3>Hi {message}</h3>
         <div className="row">
           {/* Left Sidebar */}
           <nav id="sidebarMenu" className="p-3 col-md-3 col-lg-2 d-md-block bg-light sidebar vh-100">

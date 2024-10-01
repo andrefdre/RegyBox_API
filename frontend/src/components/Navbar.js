@@ -5,37 +5,12 @@ import Cookies from 'js-cookie'; // Import the js-cookie library
 import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const navigate = useNavigate();
-
-    // Check if user is authenticated when the component mounts
+    const [isAuth, setIsAuth] = useState(false);
     useEffect(() => {
-        const checkAuth = async () => {
-            const token = Cookies.get('authToken');
-            if (token) {
-                try {
-                    // Replace with your actual API endpoint
-                    const response = await axios.get('/api/auth/check', {
-                        headers: { Authorization: `Bearer ${token}` }
-                    });
-                    if (response.status === 200) {
-                        setIsLoggedIn(true); // User is logged in
-                    }
-                } catch (error) {
-                    console.error('Authentication check failed', error);
-                    setIsLoggedIn(false);
-                }
-            }
-        };
-
-        checkAuth();
-    }, []);
-
-    const handleLogout = () => {
-        Cookies.remove('authToken'); // Remove the cookie
-        setIsLoggedIn(false); // Update local state
-        navigate('/'); // Redirect to home
-    };
+      if (localStorage.getItem('access_token') !== null) {
+         setIsAuth(true); 
+       }
+     }, [isAuth]);
 
     return (
         <header className="p-3 bg-dark text-white">
@@ -50,11 +25,11 @@ const Navbar = () => {
                         <li><Link to="/About" className="nav-link px-2 text-white">About</Link></li>
                     </ul>
                     <div className="text-end">
-                        {isLoggedIn ? (
+                        {isAuth ? (
                             <>
                                 <span className="me-2">Welcome, User!</span>
                                 <Link to="/dashboard" className="btn btn-warning me-2">Dashboard</Link>
-                                <Link to="#" className="btn btn-warning me-2" onClick={handleLogout}>Logout</Link>
+                                <Link to="#" className="btn btn-warning me-2">Logout</Link>
                             </>
                         ) : (
                             <Link to="/login" className="btn btn-warning me-2">Login</Link>

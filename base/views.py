@@ -1,63 +1,56 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.contrib import messages
+from django.shortcuts import render
 from django.contrib.auth.models import User
 from .Regybox_API import RegyBox_API
-from django.http import JsonResponse
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth.decorators import login_required
+from .models import User, Token
+from django.contrib.auth.hashers import make_password
 
 def serve_react_app(request):
     # Serve your React app's index.html file
     return render(request, 'index.html')  # Assuming 'index.html' is your React entry point
 
+SALT = "8b4f6b2cc1868d75ef79e5cfb8779c11b6a374bf0fce05b485581bf4e1e25b96c8c2855015de8449"
+URL = "http://localhost:3000"
 
-@api_view(['POST'])
-def login_view(request):
-    regybox_api = RegyBox_API()
-    email = request.data.get('email')
-    password = request.data.get('password')
-    errors = []
-    if not email:
-        errors.append('Email is required')
-    if not password:
-        errors.append('Password is required')
 
-    user_cookie = regybox_api.login(148,email, password)
-
-    if user_cookie:
-        user = authenticate(request, username=email, password=password)
+class LoginView(APIView):
+    def post(self, request, format=None):
+        email = request.data["email"]
+        password = request.data["password"]
+        hashed_password = make_password(password=password, salt=SALT)
+        regybox_api = RegyBox_API()
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            user = None
         if user is None:
-            user = User.objects.create_user(email, email, password)
-            user = authenticate(request, username=email, password=password)
-    else:
-        user = None
-
-    if user is not None:
-        return Response({'message': 'Login successful!' , 'token': user_cookie}, status=status.HTTP_200_OK)
-    else:
-        errors.append("Invalid email or password.")
-        return Response({'error': errors}, status=status.HTTP_400_BAD_REQUEST)
-    
-
-@api_view(['GET'])
-@login_required  # Ensure the user is logged in
-def check_auth(request):
-    # This view checks if the user is authenticated
-    return Response({'status': 'success', 'message': 'User is authenticated.'})
-
-class LogoutView(APIView):
-     permission_classes = (IsAuthenticated,)
-     def post(self, request):
-          
-          try:
-               refresh_token = request.data["refresh_token"]
-               token = RefreshToken(refresh_token)
-               token.blacklist()
-               return Response(status=status.HTTP_205_RESET_CONTENT)
-          except Exception as e:
-               return Response(status=status.HTTP_400_BAD_REQUEST)
+            cookie_regybox = regybox_api.login(148, email, password)
+            if cookie_regybox is None:
+                return Response(
+                    {
+                        "success": False,
+                        "message": "Invalid Login Credentials!",
+                    },
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                user = User.objects.create(email=email, password=hashed_password)
+                return Response(
+                    {"success": True, "message": "You are now logged in!"},
+                    status=status.HTTP_200_OK,
+                )
+        if user is None or user.password != hashed_password:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Invalid Login Credentials!",
+                },
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                {"success": True, "message": "You are now logged in!"},
+                status=status.HTTP_200_OK,
+            )
