@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../interceptors/axios';
 
 
 const Login = (props) => {
@@ -13,30 +14,33 @@ const Login = (props) => {
   const { isLoggedIn, setIsLoggedIn} = props;
 
   useEffect(() => {
-    if (isLoggedIn) navigate("/dashboard");
+    if (isLoggedIn) navigate('/dashboard');
   });
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   // Create the submit method.
 
   const handleLogin = async (ev) => {
-    // ev.preventDefault();
+    ev.preventDefault();
     const email = ev.target.email.value;
     const password = ev.target.password.value;
     const formData = { email: email, password: password };
     try{
-      const res = await axios.post('http://127.0.0.1:8000/api/login', formData);
+      const res = await axios.post('http://127.0.0.1:8000/api/login', formData );
       const data = res.data;
       if (data.success === true) {
         setErrorMessages([]);
         setIsLoggedIn(true);
         setEmail(email);
-        navigate("/dashboard");
+        navigate('/dashboard');
+    }
+    else {
+      setErrorMessages([data.message]);
     }
     }
     catch (err) {
-      if (err.response.status === 401) setErrorMessages(['Invalid credentials']);
+      console.log(err.data.message);
+      setErrorMessages(err.data.message);
     } 
   };
 

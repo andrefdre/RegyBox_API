@@ -51,7 +51,11 @@ class RegyBox_API:
             "login": email,
             "password" : password
         }
-        response = self.session.post(url , data=data)
+        try:
+            response = self.session.post(url , data=data)
+        except:
+            return None
+  
         if response.text.find("Acesso negado") != -1:
             return None
         if response.status_code == 200:

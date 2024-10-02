@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'; // Usado para navegação
-import axios from 'axios';
-import Cookies from 'js-cookie'; // Import the js-cookie library
-import { useNavigate } from 'react-router-dom';
 
-const Navbar = () => {
-    const [isAuth, setIsAuth] = useState(false);
-    useEffect(() => {
-      if (localStorage.getItem('access_token') !== null) {
-         setIsAuth(true); 
-       }
-     }, [isAuth]);
+const Navbar = (props) => {
+
+    const { isLoggedIn, setIsLoggedIn, email } = props;
 
     return (
         <header className="p-3 bg-dark text-white">
@@ -25,7 +18,7 @@ const Navbar = () => {
                         <li><Link to="/About" className="nav-link px-2 text-white">About</Link></li>
                     </ul>
                     <div className="text-end">
-                        {isAuth ? (
+                        {isLoggedIn ? (
                             <>
                                 <span className="me-2">Welcome, User!</span>
                                 <Link to="/dashboard" className="btn btn-warning me-2">Dashboard</Link>

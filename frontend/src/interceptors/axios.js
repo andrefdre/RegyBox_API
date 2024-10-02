@@ -1,24 +1,43 @@
 import axios from "axios";
 
-// axios.defaults.baseURL = 'http://localhost:8000/api/';
+const axiosInstance = axios.create({
+    baseURL: 'localhost:8000', // Replace with your API base URL
+    timeout: 1000,
+    headers: { 'Content-Type': 'application/json' }
+  });
 
-let refresh = false;
-
-axios.interceptors.response.use(resp => resp, async error => {
-    if (error.response.status === 401 && !refresh) {
-        refresh = true;
-
-        console.log(localStorage.getItem('refresh_token'))
-        const response = await axios.post('http://localhost:8000/token/refresh/', {refresh:localStorage.getItem('refresh_token')}, {headers: {'Content-Type': 'application/json',}},{withCredentials: true});
-
-        if (response.status === 200) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${response.data['access']}`;
-            localStorage.setItem('access_token', response.data.access);
-            localStorage.setItem('refresh_token', response.data.refresh);
-
-            return axios(error.config);
-        }
+// Add a request interceptor
+axiosInstance.interceptors.request.use(
+    function (config) {
+      // Do something before the request is sent
+      const token = localStorage.getItem('authToken'); // Retrieve auth token from localStorage
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    },
+    function (error) {
+      // Handle the error
+      return Promise.reject(error);
     }
-    refresh = false;
-    return error;
-});
+  );
+  
+  // Add a response interceptor
+  axiosInstance.interceptors.response.use(
+    function (response) {
+      // Do something with the response data
+      console.log('Response:', response);
+      return response;
+    },
+    function (error) {
+      // Handle the response error
+      if (error.response && error.response.status === 401) {
+        // Handle unauthorized error
+        console.error('Unauthorized, logging out...');
+        // Perform any logout actions or redirect to login page
+      }
+      return Promise.reject(error);
+    }
+  );
+  
+  export default axiosInstance;
