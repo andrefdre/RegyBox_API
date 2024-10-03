@@ -27,14 +27,13 @@ const Login = (props) => {
     const password = ev.target.password.value;
     const formData = { email: email, password: password };
     try{
-      const res = await axiosInstance.post('http://127.0.0.1:8000/api/login', formData );
+      const res = await axios.post('http://127.0.0.1:8000/api/login', formData);
       const data = res.data;
       if (data.success === true) {
         setErrorMessages([]);
         setIsLoggedIn(true);
         setEmail(email);
         navigate('/dashboard');
-        axiosInstance.defaults.headers['Authorization'] = "JWT " + data.access_token;
         Cookies.set('access_token', data.access_token);
         Cookies.set('refresh_token', data.refresh_token);
     }

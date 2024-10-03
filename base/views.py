@@ -17,11 +17,12 @@ def serve_react_app(request):
 SALT = "8b4f6b2cc1868d75ef79e5cfb8779c11b6a374bf0fce05b485581bf4e1e25b96c8c2855015de8449"
 
 class LoginView(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = [AllowAny,]
     def post(self, request, format='json'):
         message = []
         email = request.data["email"]
         password = request.data["password"]
+        print(f"Received email: {email}, password: {password}")
         hashed_password = make_password(password=password, salt=SALT)
         regybox_api = RegyBox_API()
         try:
@@ -102,6 +103,6 @@ class ProtectedDataView(APIView):
 
     def get(self, request):
         # Aqui você pode acessar request.user para obter o usuário autenticado
-
+        print(f"User: {request.user}")  # Verifique o que está a ser retornado
 
         return Response(status=status.HTTP_200_OK)

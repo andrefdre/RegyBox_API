@@ -20,6 +20,7 @@ function App() {
     if (access_token) {
     try{
         const response = await axiosInstance.get('http://127.0.0.1:8000/api/protected');
+        console.log(response);
         if (response.status === 200) {
           setIsLoggedIn(true);
           setEmail(response.data.email);

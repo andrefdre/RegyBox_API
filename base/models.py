@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser
 
 # Create your models here.
 class Token(models.Model):
@@ -10,7 +11,7 @@ class Token(models.Model):
     is_used = models.BooleanField(default=False)
 
 
-class User(models.Model):
+class User(AbstractBaseUser):
     id = models.AutoField(primary_key=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)

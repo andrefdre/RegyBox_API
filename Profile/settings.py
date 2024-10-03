@@ -138,7 +138,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
      'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        #'rest_framework_simplejwt.authentication.JWTAuthentication',
+         'base.authentication.CustomJWTAuthentication',  # Use your custom class
       ],
 }
 SIMPLE_JWT = {
@@ -149,7 +150,7 @@ SIMPLE_JWT = {
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
     'VERIFYING_KEY': None,
-    'AUTH_HEADER_TYPES': ('JWT'),
+    'AUTH_HEADER_TYPES': ('JWT',),
     'USER_ID_FIELD': 'email',
     'USER_ID_CLAIM': 'user_email',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),

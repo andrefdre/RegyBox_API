@@ -13,4 +13,4 @@ class UserSerializer(serializers.ModelSerializer):
 class TokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Token
-        fields = ["token", "created_at", "expires_at", "user_id", "is_used"]
+        fields = ["token", "created_at", "expires_at", "email", "is_used"]
