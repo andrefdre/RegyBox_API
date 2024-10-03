@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import axiosInstance from '../interceptors/axios';
+import Cookies from 'js-cookie';
+import axiosInstance from '../interceptors/axios';  // Importa a instância do Axios e a função de autenticação
 
 
 const Login = (props) => {
@@ -26,21 +27,28 @@ const Login = (props) => {
     const password = ev.target.password.value;
     const formData = { email: email, password: password };
     try{
-      const res = await axios.post('http://127.0.0.1:8000/api/login', formData );
+      const res = await axiosInstance.post('http://127.0.0.1:8000/api/login', formData );
       const data = res.data;
       if (data.success === true) {
         setErrorMessages([]);
         setIsLoggedIn(true);
         setEmail(email);
         navigate('/dashboard');
+        axiosInstance.defaults.headers['Authorization'] = "JWT " + data.access_token;
+        Cookies.set('access_token', data.access_token);
+        Cookies.set('refresh_token', data.refresh_token);
     }
     else {
       setErrorMessages([data.message]);
     }
     }
     catch (err) {
-      console.log(err.data.message);
-      setErrorMessages(err.data.message);
+      if (err.data === undefined) {
+        setErrorMessages(['An error occurred. Please try again later.']);
+      }
+      else {
+        setErrorMessages(err.data.message);
+      }
     } 
   };
 

@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // import BookClass from './BookClass'; // Create this component
 // import ViewBookedClasses from './ViewBookedClasses'; // Create this component
 import DashboardCalendar from './DashboardCalendar'; // Create this component
+import axiosInstance from '../interceptors/axios';  // Importa a instância do Axios e a função de autenticação
 
 
 const Dashboard = (props) => {
