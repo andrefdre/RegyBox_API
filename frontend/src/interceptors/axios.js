@@ -17,7 +17,6 @@ axiosInstance.interceptors.response.use(
   response => response,
   error => {
       const originalRequest = error.config;
-      console.log(error.response);
       // Prevent infinite loops early
       if (error.response.status === 401 && originalRequest.url === baseURL+'token/refresh/') {
           window.location.href = '/login/';
@@ -35,8 +34,6 @@ axiosInstance.interceptors.response.use(
 
                   // exp date in token is expressed in seconds, while now() returns milliseconds:
                   const now = Math.ceil(Date.now() / 1000);
-                  console.log(tokenParts.exp);
-
                   if (tokenParts.exp > now) {
                       return axiosInstance
                       .post('/token/refresh/', {refresh: refreshToken})

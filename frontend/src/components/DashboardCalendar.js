@@ -14,14 +14,19 @@ const DashboardCalendar = () => {
 
   const handleDateChange = (selectedDate) => {
     setDate(selectedDate);
-    const formattedDate = selectedDate.toISOString().split('T')[0]; // Format date as YYYY-MM-DD
+    // Ajuste de data considerando o fuso horário local
+  const offset = selectedDate.getTimezoneOffset(); // Offset em minutos do fuso horário
+  const localDate = new Date(selectedDate.getTime() - (offset * 60 * 1000)); // Ajuste de horas baseado no offset
+
+  // Formate a data corretamente no fuso horário local
+  const formattedDate = localDate.toISOString().split('T')[0]; // Formata a data como YYYY-MM-DD
     setClasses(classesData[formattedDate] || []); // Set classes for the selected date
   };
 
   return (
-    <div>
-      <h2>Select a Date to View Classes</h2>
-      <Calendar onChange={handleDateChange} value={date} />
+    <div className='container align-self-center'>
+      <h2 className='text-center'>Select a Date to View Classes</h2>
+      <Calendar className='w-100 d-inline-block' onChange={handleDateChange} value={date} />
       <div className="classes-list">
         <h3>Classes for {date.toDateString()}:</h3>
         {classes.length > 0 ? (

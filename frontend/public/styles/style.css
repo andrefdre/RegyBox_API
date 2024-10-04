@@ -217,3 +217,49 @@
   margin: 5px 0;
   border-radius: 5px;
 }
+
+.react-calendar {
+  background-color: #ffffff;  /* Fundo branco */
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  border: none;
+  padding: 20px;
+  height: 400px;
+  font-family: 'Poppins', sans-serif; /* Escolha de fonte moderna */
+}
+
+.react-calendar__tile {
+  font-size: 18px;  /* Aumente um pouco o tamanho do texto */
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #f0f0f0;  /* Cor de fundo clara */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.react-calendar__tile:hover {
+  background-color: #ffcc80;  /* Destaque ao passar o mouse */
+  color: #333;
+}
+
+.react-calendar__tile--active {
+  background-color: #ff8c00;  /* Cor de destaque quando o dia está selecionado */
+  color: white;
+}
+
+.react-calendar__navigation button {
+  color: #ff8c00;  /* Cor de destaque para os botões de navegação */
+  background: none;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+
+@media (max-width: 768px) {
+  .react-calendar {
+    width: 100%;
+    font-size: 14px;
+  }
+}

@@ -40,9 +40,10 @@ function App() {
       <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} name={email}/>
       <Routes>
         <Route path="/" element={<Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} name={email} />} />
+        <Route path="*" element={<h1>Not Found</h1>} />
         {/* Adicione suas outras rotas aqui */}
         <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} name={email}/>} />
-        <Route path="/dashboard/" element={<Dashboard isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} name={email}/>} />
+        <Route path="/dashboard/*" element={<Dashboard isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} name={email}/>} />
       </Routes>
     </Router>
     </div>

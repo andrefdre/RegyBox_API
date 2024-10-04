@@ -1,34 +1,35 @@
 // Dashboard.js
 import {useEffect, useState} from "react";
-import axios from "axios";
-import { Link, Route, Routes, redirect  } from 'react-router-dom';
+import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import BookClass from './BookClass'; // Create this component
-// import ViewBookedClasses from './ViewBookedClasses'; // Create this component
 import DashboardCalendar from './DashboardCalendar'; // Create this component
 import axiosInstance from '../interceptors/axios';  // Importa a instância do Axios e a função de autenticação
 
 
 const Dashboard = (props) => {
     const { isLoggedIn, setIsLoggedIn} = props;
+    const navigate = useNavigate();  // useNavigate replaces redirect
+
     useEffect(() => {
-      if (isLoggedIn === false) redirect("/");
+      if (isLoggedIn === false) {
+        navigate("/login");  // Redirect to login if not logged in
+      }
     }, []);
 
   return (
     <div className="container body">
-        <div className="row">
+        <div className="row vh-100">
           {/* Left Sidebar */}
-          <nav id="sidebarMenu" className="p-3 col-md-3 col-lg-2 d-md-block bg-light sidebar vh-100">
+          <nav id="sidebarMenu" className="p-3 col-md-3 col-lg-2 d-md-block bg-light sidebar">
             <div className="position-sticky">
               <ul className="nav flex-column">
                 <li className="nav-item">
-                  <Link className="nav-link active" to="/dashboard/book-class">
+                  <Link className="nav-link active" to="book-class">
                     Reservar Aulas
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/dashboard/view-booked-classes">
+                  <Link className="nav-link" to="view-booked-classes">
                     Ver Aulas Reservadas
                   </Link>
                 </li>
@@ -37,16 +38,13 @@ const Dashboard = (props) => {
           </nav>
 
           {/* Main Content */}
-          <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+          <main className="col-md-9 ms-sm-auto col-lg-10 p-md-4">
             <div className="content">
             <Routes>
-              <Route path="/dashboard/book-class" element={<DashboardCalendar />} />
+              <Route path="book-class" element={<DashboardCalendar />} />
       
-              <Route path="/dashboard/view-booked-classes">
+              <Route path="view-booked-classes" element={<div>View Booked Classes Component</div>} />
                 {/* You can add your ViewBookedClasses component here */}
-              </Route>
-              <Route path="/">
-              </Route>
             </Routes>
             </div>
           </main>
