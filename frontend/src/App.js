@@ -20,7 +20,6 @@ function App() {
     if (access_token) {
     try{
         const response = await axiosInstance.get('http://127.0.0.1:8000/api/protected');
-        console.log(response);
         if (response.status === 200) {
           setIsLoggedIn(true);
           setEmail(response.data.email);
@@ -38,7 +37,7 @@ function App() {
   return (
     <div className="background">
     <Router>
-      <Navbar />
+      <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} name={email}/>
       <Routes>
         <Route path="/" element={<Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} name={email} />} />
         {/* Adicione suas outras rotas aqui */}

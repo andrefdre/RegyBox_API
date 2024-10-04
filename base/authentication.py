@@ -13,8 +13,6 @@ class CustomJWTAuthentication(JWTAuthentication):
 
     def get_user(self, validated_token):
         user_id = validated_token[self.user_id_claim]  # Use the user_id_claim from settings
-        print(user_id)
-
         # Change this line to search by a different field (e.g., 'email')
         try:
             user = User.objects.get(email=user_id)

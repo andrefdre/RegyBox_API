@@ -14,22 +14,16 @@ def serve_react_app(request):
     # Serve your React app's index.html file
     return render(request, 'index.html')  # Assuming 'index.html' is your React entry point
 
-SALT = "8b4f6b2cc1868d75ef79e5cfb8779c11b6a374bf0fce05b485581bf4e1e25b96c8c2855015de8449"
-
 class LoginView(APIView):
     permission_classes = [AllowAny,]
     def post(self, request, format='json'):
-        message = []
         email = request.data["email"]
         password = request.data["password"]
-        print(f"Received email: {email}, password: {password}")
-        hashed_password = make_password(password=password, salt=SALT)
         regybox_api = RegyBox_API()
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             user = None
-
         if user is None:
             cookie_regybox = regybox_api.login(148, email, password)
             if cookie_regybox is None:
@@ -41,7 +35,9 @@ class LoginView(APIView):
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
             else:
-                user = User.objects.create(email=email, password=hashed_password)
+                user = User.objects.create(email=email)
+                user.set_password(password)  # Use set_password to hash the password
+                user.save()
                 access_token = AccessToken.for_user(user)
                 refresh_token =RefreshToken.for_user(user)
                 return Response(
@@ -53,7 +49,7 @@ class LoginView(APIView):
                 )
             
 
-        if user.password != hashed_password:
+        if user.check_password(password) is False:
             return Response(
                 {
                     "success": False,
@@ -86,7 +82,6 @@ class LoginView(APIView):
 
 class LogoutAndBlacklistRefreshTokenForUserView(APIView):
     permission_classes = (permissions.AllowAny,)
-    authentication_classes = ()
 
     def post(self, request):
         try:
@@ -103,6 +98,4 @@ class ProtectedDataView(APIView):
 
     def get(self, request):
         # Aqui você pode acessar request.user para obter o usuário autenticado
-        print(f"User: {request.user}")  # Verifique o que está a ser retornado
-
         return Response(status=status.HTTP_200_OK)

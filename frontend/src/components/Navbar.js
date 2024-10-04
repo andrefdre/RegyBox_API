@@ -1,10 +1,34 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom'; // Usado para navegação
+import Cookies from 'js-cookie';
+import axiosInstance from '../interceptors/axios';  // Importa a instância do Axios e a função de autenticação
 
 const Navbar = (props) => {
-
+    const navigate = useNavigate();
     const { isLoggedIn, setIsLoggedIn, email } = props;
+    const handleLogout = () => {
+        const refreshToken = Cookies.get('refresh_token'); // Or however you're storing the refresh token
 
+    if (refreshToken) {
+        axiosInstance.post('http://127.0.0.1:8000/api/blacklist', { refresh_token: refreshToken })
+            .then(response => {
+                console.log('Token blacklisted successfully:', response);
+                // Optionally clear tokens from storage and redirect to login
+                Cookies.remove('access_token');
+                Cookies.remove('refresh_token');
+                // Redirect or update state
+                setIsLoggedIn(false);
+                navigate('/');
+            })
+            .catch(error => {
+                console.error('Error blacklisting token:', error.response ? error.response.data : error);
+            });
+    } else {
+        console.log('No refresh token found.');
+        // Handle case where refresh token is not available
+    }
+    };
     return (
         <header className="p-3 bg-dark text-white">
             <div className="container">
@@ -20,9 +44,8 @@ const Navbar = (props) => {
                     <div className="text-end">
                         {isLoggedIn ? (
                             <>
-                                <span className="me-2">Welcome, User!</span>
                                 <Link to="/dashboard" className="btn btn-warning me-2">Dashboard</Link>
-                                <Link to="#" className="btn btn-warning me-2">Logout</Link>
+                                <button className="btn btn-warning me-2" onClick={handleLogout}>Logout</button>
                             </>
                         ) : (
                             <Link to="/login" className="btn btn-warning me-2">Login</Link>
