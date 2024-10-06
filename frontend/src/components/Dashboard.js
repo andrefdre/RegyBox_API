@@ -3,8 +3,6 @@ import {useEffect, useState} from "react";
 import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DashboardCalendar from './DashboardCalendar'; // Create this component
-import axiosInstance from '../interceptors/axios';  // Importa a instância do Axios e a função de autenticação
-
 
 const Dashboard = (props) => {
     const { isLoggedIn, setIsLoggedIn} = props;

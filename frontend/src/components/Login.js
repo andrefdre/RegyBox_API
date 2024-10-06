@@ -36,17 +36,18 @@ const Login = (props) => {
         navigate('/dashboard');
         Cookies.set('access_token', data.access_token);
         Cookies.set('refresh_token', data.refresh_token);
+        Cookies.set('regybox_token', data.regybox_token);
     }
     else {
       setErrorMessages([data.message]);
     }
     }
     catch (err) {
-      if (err.data === undefined) {
+      if (err.response.data.data === undefined) {
         setErrorMessages(['An error occurred. Please try again later.']);
       }
       else {
-        setErrorMessages(err.data.message);
+        setErrorMessages(err.response.data.message);
       }
     } 
   };

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // Import styles for the calendar
+import Cookies from 'js-cookie';
+import axiosInstance from '../interceptors/axios';  // Importa a instância do Axios e a função de autenticação
 
 const classesData = {
   '2024-09-29': ['Yoga Class', 'Pilates Class'],
@@ -11,8 +13,9 @@ const classesData = {
 const DashboardCalendar = () => {
   const [date, setDate] = useState(new Date());
   const [classes, setClasses] = useState([]);
+  const [errorMessages, setErrorMessages] = useState([]); // For error messages
 
-  const handleDateChange = (selectedDate) => {
+  const handleDateChange = async (selectedDate) => {
     setDate(selectedDate);
     // Ajuste de data considerando o fuso horário local
   const offset = selectedDate.getTimezoneOffset(); // Offset em minutos do fuso horário
@@ -20,7 +23,26 @@ const DashboardCalendar = () => {
 
   // Formate a data corretamente no fuso horário local
   const formattedDate = localDate.toISOString().split('T')[0]; // Formata a data como YYYY-MM-DD
-    setClasses(classesData[formattedDate] || []); // Set classes for the selected date
+  
+  try {
+    const requestData = { date: formattedDate, regybox_token: Cookies.get('regybox_token') };
+    const response = await axiosInstance.get(`/get-classes`, { params: requestData });
+    console.log(response.data);
+
+    if (response.data.success === false) {
+      setErrorMessages([response.data.message]);
+      return;
+    }
+    setClasses(response.data.classes);
+  }
+  catch (error) {
+    if (error.response.data.message === undefined) {
+      setErrorMessages(['An error occurred. Please try again later.']);
+    }
+    else {
+      setErrorMessages(error.response.data.message);
+    }
+  }
   };
 
   return (
@@ -36,7 +58,7 @@ const DashboardCalendar = () => {
             ))}
           </ul>
         ) : (
-          <p>No classes available for this date.</p>
+          <p>{errorMessages}</p>
         )}
       </div>
     </div>

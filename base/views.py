@@ -40,11 +40,13 @@ class LoginView(APIView):
                 user.save()
                 access_token = AccessToken.for_user(user)
                 refresh_token =RefreshToken.for_user(user)
+                regybox_token = cookie_regybox
                 return Response(
                     {"success": True, 
                      "message": ["You are now logged in!"],
                      "refresh_token": str(refresh_token),
-                     "access_token": str(access_token),},
+                     "access_token": str(access_token),
+                     "regybox_token": str(regybox_token)},
                     status=status.HTTP_200_OK,
                 )
             
@@ -71,11 +73,13 @@ class LoginView(APIView):
             else:
                 access_token = AccessToken.for_user(user)
                 refresh_token =RefreshToken.for_user(user)
+                regybox_token = cookie_regybox
                 return Response(
                     {"success": True, 
                      "message": ["You are now logged in!"],
                      "refresh_token": str(refresh_token),
-                     "access_token": str(access_token),},
+                     "access_token": str(access_token),
+                     "regybox_token": str(regybox_token)},
                     status=status.HTTP_200_OK,
                 )
 
@@ -98,4 +102,51 @@ class ProtectedDataView(APIView):
 
     def get(self, request):
         # Aqui você pode acessar request.user para obter o usuário autenticado
+        regybox_token = request.query_params.get("regybox_token")
+        if regybox_token is None:
+            return Response(
+                {
+                    "success": False,
+                    "message": ["Invalid Token!"],
+                },
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
         return Response(status=status.HTTP_200_OK)
+    
+
+class GetClassesForTheDay(APIView):
+    permission_classes = [IsAuthenticated]  # Exige autenticação
+
+    def get(self, request):
+        date = request.query_params.get("date")
+        regybox_token = request.query_params.get("regybox_token")
+        regybox_api = RegyBox_API()
+        requested_date, classes_of_the_day = regybox_api.get_classes_for_the_day(date , cookie=regybox_token)
+        print(classes_of_the_day)
+        if requested_date is None:
+            return Response(
+                {
+                    "success": False,
+                    "message": ["Invalid Token!"],
+                },
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+        
+        if requested_date != date:
+            return Response(
+                {
+                    "success": False,
+                    "message": ["Invalid Date!"],
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
+        if len(classes_of_the_day) == 0:
+            return Response(
+                {
+                    "success": False,
+                    "message": ["No classes available for the day!"],
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return Response(classes_of_the_day, status=status.HTTP_200_OK)

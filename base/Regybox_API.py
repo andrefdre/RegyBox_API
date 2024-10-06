@@ -131,7 +131,7 @@ class RegyBox_API:
         response = self.session.get(url , params=params , cookies=cookies)
         return response.text
 
-    def get_classes_for_the_day(self,date):
+    def get_classes_for_the_day(self,date , cookie = None):
         """
         This function is used to get the classes of a specific date
         :param date: The date of the class in the format "YYYY-MM-DD"
@@ -152,9 +152,14 @@ class RegyBox_API:
             "z" : ""
         }
 
-        cookies = {
-            "regybox_user" : self.regybox_user_cookie,
-        }
+        if cookie == None:
+            cookies = {
+                "regybox_user" : self.regybox_user_cookie,
+            }
+        else:
+            cookies = {
+                "regybox_user" : cookie,
+            }
         response = self.session.get(url , params=params , cookies=cookies)
         soup =BeautifulSoup(response.text, "html.parser")
 
@@ -176,7 +181,6 @@ class RegyBox_API:
         classes_of_the_day= []
 
         # Print the classes of the day
-        print(f"Classes for the day {year}-{month}-{day}")
         for class_time in self.class_time_array:
             for class_info in soup.find_all('div',string=re.compile(class_time)):
                 time_of_class = class_info.string
@@ -199,7 +203,6 @@ class RegyBox_API:
                     "x": x
                 }
                 classes_of_the_day.append(class_information_structure)
-                print(f"Time: {time_of_class} - Students, {students_in_class}/{total_students_allowed} , able to join class {can_join_class} , Class ID: {class_id} , x: {x}")
         
         return date,  classes_of_the_day
 
