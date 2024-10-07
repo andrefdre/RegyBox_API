@@ -18,16 +18,17 @@ function App() {
     async function fetchData() {
     const access_token = Cookies.get('access_token');
     if (access_token) {
-    try{
-        const response = await axiosInstance.get('http://127.0.0.1:8000/api/protected');
-        if (response.status === 200) {
-          setIsLoggedIn(true);
-          setEmail(response.data.email);
-        }
-    }
-    catch (error) {
-        error = error.response;
-    }
+      const requestData = { regybox_token: Cookies.get('regybox_token') };
+      try{
+          const response = await axiosInstance.get('http://127.0.0.1:8000/api/protected' , { params: requestData });
+          if (response.status === 200) {
+            setIsLoggedIn(true);
+            setEmail(response.data.email);
+          }
+      }
+      catch (error) {
+          error = error.response;
+      }
     }
   }
   fetchData();

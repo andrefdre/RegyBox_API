@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.contrib.auth.models import User
 from .Regybox_API import RegyBox_API
 from rest_framework.permissions import IsAuthenticated , AllowAny
 from rest_framework.response import Response
@@ -7,7 +6,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework import status , permissions
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken, TokenError
-from .models import User, Token
+from .models import User, Classes_to_enroll_model
 from django.contrib.auth.hashers import make_password
 
 def serve_react_app(request):
@@ -121,8 +120,34 @@ class GetClassesForTheDay(APIView):
         date = request.query_params.get("date")
         regybox_token = request.query_params.get("regybox_token")
         regybox_api = RegyBox_API()
-        requested_date, classes_of_the_day = regybox_api.get_classes_for_the_day(date , cookie=regybox_token)
-        print(classes_of_the_day)
+        [requested_date, classes_of_the_day] = regybox_api.get_classes_for_the_day(date , cookie=regybox_token)
+
+        user = request.user  # Obtém o usuário autenticado
+        
+        # Acessa as classes para as quais o usuário está inscrito
+        classes = user.classes_to_enroll.all()  # Isso retorna um QuerySet de Classes_to_enroll_model
+
+        # Se quiser formatar a resposta:
+        classes_list = [{'date': cls.date, 'hour': cls.hour} for cls in classes]
+        enrolled_for_the_day = False
+        for class_of_the_day in classes_of_the_day:
+            for cls in classes_list:
+                if date == cls["date"] and class_of_the_day["time"] == cls["hour"]:
+                    class_of_the_day["enrolled"] = True
+                    enrolled_for_the_day = True
+                    break
+            else:
+                class_of_the_day["enrolled"] = False
+
+        if enrolled_for_the_day:
+            for class_of_the_day in classes_of_the_day:
+                class_of_the_day['enrolled_for_the_day'] = True
+                class_of_the_day['date'] = date # Adiciona a data à resposta para colocar nos botões
+        else:
+            for class_of_the_day in classes_of_the_day:
+                class_of_the_day['enrolled_for_the_day'] = False
+                class_of_the_day['date'] = date
+
         if requested_date is None:
             return Response(
                 {
@@ -149,4 +174,87 @@ class GetClassesForTheDay(APIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        
         return Response(classes_of_the_day, status=status.HTTP_200_OK)
+    
+
+
+class AddClassToScheduler(APIView):
+    permission_classes = [IsAuthenticated]  # Exige autenticação
+
+    def post(self, request):
+        date = request.data["date"]
+        time = request.data["time"]
+        try:
+            user = User.objects.get(email=request.user)
+        except User.DoesNotExist:
+            user = None        
+        if user is None:
+            return Response(
+                {
+                    "success": False,
+                    "message": ["User not found!"],
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
+        if user.classes_to_enroll.filter(date=date, hour=time).exists():
+            return Response(
+                {
+                    "success": False,
+                    "message": ["Class already added to scheduler!"],
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Crie uma nova instância do modelo de classe
+        class_to_add = Classes_to_enroll_model.objects.create(date=date, hour=time)
+
+        # Adicione a nova classe ao usuário
+        user.classes_to_enroll.add(class_to_add)
+
+        user.save()
+
+        return Response(
+            {
+                "success": True,
+                "message": ["Class added to scheduler!"],
+            },
+            status=status.HTTP_200_OK,
+        )
+    
+class RemoveClassFromScheduler(APIView):
+    permission_classes = [IsAuthenticated]  # Exige autenticação
+
+    def post(self, request):
+        date = request.data["date"]
+        time = request.data["time"]
+        try:
+            user = User.objects.get(email=request.user)
+        except User.DoesNotExist:
+            user = None        
+        if user is None:
+            return Response(
+                {
+                    "success": False,
+                    "message": ["User not found!"],
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Obtenha a classe a ser removida
+        class_to_remove = Classes_to_enroll_model.objects.all().filter(date=date, hour=time)
+
+        for class_2_remove in class_to_remove:
+        # Remova a classe do usuário
+            user.classes_to_enroll.remove(class_2_remove)
+
+        user.save()
+
+        return Response(
+            {
+                "success": True,
+                "message": ["Class removed from scheduler!"],
+            },
+            status=status.HTTP_200_OK,
+        )

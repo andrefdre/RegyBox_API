@@ -27,7 +27,6 @@ class RegyBox_API:
             "Dezembro": 12
         }
 
-        #TODO Make it work on saturdays
         self.class_time_array = [
             "07:00 - 07:45",
             "08:00 - 08:45",
@@ -37,6 +36,12 @@ class RegyBox_API:
             "17:30 - 18:30",
             "18:30 - 19:30",
             "19:30 - 20:30"
+        ]
+
+        self.class_time_array_weekend = [
+            "08:00 - 09:00",
+            "09:00 - 10:00",
+            "10:00 - 11:00",
         ]
 
     def login(self, box_id , email, password):
@@ -175,21 +180,28 @@ class RegyBox_API:
         if not (int(day) == int(day_confirmation) and int(month) == int(month_confirmation) and int(year) == int(year_confirmation)):
             print(f"Error, the date {date} is not the same as the date {year_confirmation}-{month_confirmation}-{day_confirmation}")
             return
-        
         # Extract the classes of the day
 
-        classes_of_the_day= []
+  
+        # This bit of the code checks if the requested day is weekend or not and returns the respective array of classes schedules. This is necessary since Crossfit Feira has different times for weekdays and weekends
+        if date_time.weekday() < 5:
+            class_time_array = self.class_time_array
+        else:
+            class_time_array = self.class_time_array_weekend
 
-        # Print the classes of the day
-        for class_time in self.class_time_array:
+        classes_of_the_day= []
+        # Gets the classes of the day
+        for class_time in class_time_array:
             for class_info in soup.find_all('div',string=re.compile(class_time)):
                 time_of_class = class_info.string
                 students_in_class , _ , total_students_allowed = class_info.find_next("div").string.split(" ")
-
                 if class_info.find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("button") != None and int(students_in_class) < int(total_students_allowed):
                     can_join_class = True
                     class_id = class_info.find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("button").attrs["onclick"].split("?")[2].split("&")[0].split("=")[1]
-                    x = class_info.find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("button").attrs["onclick"].split("?")[2].split("&")[5].split("=")[1].split("'")[0]
+                    try:
+                        x = class_info.find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("button").attrs["onclick"].split("?")[2].split("&")[5].split("=")[1].split("'")[0]
+                    except:
+                        x = None
                 else:
                     can_join_class = False
                     class_id = None
@@ -203,8 +215,21 @@ class RegyBox_API:
                     "x": x
                 }
                 classes_of_the_day.append(class_information_structure)
-        
-        return date,  classes_of_the_day
+        # If no classes are returned it could mean you are looking to far ahead so we will fill the array with empty classes so the user can still choose to join the classe
+        if len(classes_of_the_day) == 0:
+            # Checks if it's sunday since no classes that day
+            if date_time.weekday() < 6:
+                for class_time in class_time_array:
+                    class_information_structure = {
+                        "time": class_time,
+                        "students_in_class": 0,
+                        "total_students": 0,
+                        "can_join_class": False,
+                        "class_id": None,
+                        "x": None
+                    }
+                    classes_of_the_day.append(class_information_structure)
+        return [date,  classes_of_the_day]
 
     
     def get_class_info(self, date , class_number):

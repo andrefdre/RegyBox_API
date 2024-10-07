@@ -91,7 +91,6 @@
 
   .background {
     background-color: rgba(0, 0, 0, .1);
-    display: flex;            /* Use flexbox to align items */
     flex-direction: column;  /* Align items in a column */
     min-height: 100vh;      /* Ensure the body takes at least the full height of the viewport */
   }

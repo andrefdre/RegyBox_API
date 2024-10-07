@@ -1,7 +1,6 @@
 # your_app/authentication.py
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from django.contrib.auth import get_user_model
-from .models import User, Token
+from .models import User
 from rest_framework.exceptions import AuthenticationFailed
 from django.conf import settings
 

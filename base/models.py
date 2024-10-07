@@ -1,16 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-
-
-# Create your models here.
-class Token(models.Model):
-    id = models.AutoField(primary_key=True)
-    token = models.CharField(max_length=255)
-    created_at = models.DateTimeField()
-    expires_at = models.DateTimeField()
-    user_id = models.IntegerField()
-    is_used = models.BooleanField(default=False)
-
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -31,10 +20,17 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
+class Classes_to_enroll_model(models.Model):
+    date = models.CharField(max_length=255)
+    hour = models.CharField(max_length=255)
+    
+
 class User(AbstractBaseUser):
     id = models.AutoField(primary_key=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
+
+    classes_to_enroll = models.ManyToManyField(Classes_to_enroll_model, related_name='classes_to_enroll', blank=True)
 
     objects = UserManager()  # Attach the custom manager
 
