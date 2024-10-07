@@ -22,7 +22,7 @@ const Home = () => {
                     </div>
                     <div className="overflow-hidden" style={{ maxHeight: '30vh' }}>
                         <div className="container px-5">
-                            <img src={`${process.env.PUBLIC_URL}/images/bootstrap-docs.png`} className="img-fluid border rounded-3 shadow-lg mb-4" alt="Example" width="700" height="500" loading="lazy" />
+                            <img src={`${process.env.PUBLIC_URL}/images/demonstration.png`} className="img-fluid border rounded-3 shadow-lg mb-4" alt="Example" width="700" height="500" loading="lazy" />
                         </div>
                     </div>
                 </div>

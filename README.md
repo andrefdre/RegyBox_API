@@ -78,7 +78,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 <div align="center">
-<img  src="Docs/logo.svg" alt="Logo" width="400">
+<img  src="Docs/readme_logo.png" alt="Logo" width="400">
 </div>
 
 This project was developed to make scheduling  classes in the Regibox app easier. It has all the necessary tools to send requests to the Regibox API and get the necessary information to schedule classes. It also has a web interface to make the process easier(TODO).
