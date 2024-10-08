@@ -121,7 +121,12 @@ const DashboardCalendar = () => {
                   <p><strong>Time:</strong> {classItem.time}</p>
                   <p><strong>Inscritos:</strong> {classItem.students_in_class}/{classItem.total_students}</p>
                 </div>
-                {classItem['enrolled'] ? (
+                {classItem['date'] <= new Date().toISOString().split('T')[0] ? (
+                  <button className="btn btn-secondary" disabled>
+                    Data passada
+                  </button>
+                ) :
+                classItem['enrolled'] ? (
                   <button 
                     className="btn btn-warning"
                     onClick={() => removeClass(classItem['date'], classItem['time'])}>

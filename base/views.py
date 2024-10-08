@@ -1,13 +1,13 @@
 from django.shortcuts import render
 from .Regybox_API import RegyBox_API
+from .password_handling import encrypt_password, decrypt_password
 from rest_framework.permissions import IsAuthenticated , AllowAny
 from rest_framework.response import Response
-from rest_framework.exceptions import AuthenticationFailed
 from rest_framework import status , permissions
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken, TokenError
 from .models import User, Classes_to_enroll_model
-from django.contrib.auth.hashers import make_password
+from decouple import config
 
 def serve_react_app(request):
     # Serve your React app's index.html file
@@ -18,6 +18,7 @@ class LoginView(APIView):
     def post(self, request, format='json'):
         email = request.data["email"]
         password = request.data["password"]
+        SECRET_KEY = config('SECRET_KEY')
         regybox_api = RegyBox_API()
         try:
             user = User.objects.get(email=email)
@@ -34,8 +35,8 @@ class LoginView(APIView):
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
             else:
-                user = User.objects.create(email=email)
-                user.set_password(password)  # Use set_password to hash the password
+                hashed_password = encrypt_password(password, SECRET_KEY)
+                user = User.objects.create(email=email , password=hashed_password)
                 user.save()
                 access_token = AccessToken.for_user(user)
                 refresh_token =RefreshToken.for_user(user)
@@ -50,7 +51,7 @@ class LoginView(APIView):
                 )
             
 
-        if user.check_password(password) is False:
+        if password != decrypt_password(user.password, SECRET_KEY):
             return Response(
                 {
                     "success": False,
@@ -122,32 +123,7 @@ class GetClassesForTheDay(APIView):
         regybox_api = RegyBox_API()
         [requested_date, classes_of_the_day] = regybox_api.get_classes_for_the_day(date , cookie=regybox_token)
 
-        user = request.user  # Obtém o usuário autenticado
-        
-        # Acessa as classes para as quais o usuário está inscrito
-        classes = user.classes_to_enroll.all()  # Isso retorna um QuerySet de Classes_to_enroll_model
-
-        # Se quiser formatar a resposta:
-        classes_list = [{'date': cls.date, 'hour': cls.hour} for cls in classes]
-        enrolled_for_the_day = False
-        for class_of_the_day in classes_of_the_day:
-            for cls in classes_list:
-                if date == cls["date"] and class_of_the_day["time"] == cls["hour"]:
-                    class_of_the_day["enrolled"] = True
-                    enrolled_for_the_day = True
-                    break
-            else:
-                class_of_the_day["enrolled"] = False
-
-        if enrolled_for_the_day:
-            for class_of_the_day in classes_of_the_day:
-                class_of_the_day['enrolled_for_the_day'] = True
-                class_of_the_day['date'] = date # Adiciona a data à resposta para colocar nos botões
-        else:
-            for class_of_the_day in classes_of_the_day:
-                class_of_the_day['enrolled_for_the_day'] = False
-                class_of_the_day['date'] = date
-
+        # Performs the necessary checks to ensure the validity of the request
         if requested_date is None:
             return Response(
                 {
@@ -174,6 +150,32 @@ class GetClassesForTheDay(APIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        user = request.user  # Obtém o usuário autenticado
+        
+        # Acessa as classes para as quais o usuário está inscrito
+        classes = user.classes_to_enroll.all()  # Isso retorna um QuerySet de Classes_to_enroll_model
+
+        # Se quiser formatar a resposta:
+        classes_list = [{'date': cls.date, 'hour': cls.hour} for cls in classes]
+        enrolled_for_the_day = False
+        for class_of_the_day in classes_of_the_day:
+            for cls in classes_list:
+                if date == cls["date"] and class_of_the_day["time"] == cls["hour"]:
+                    class_of_the_day["enrolled"] = True
+                    enrolled_for_the_day = True
+                    break
+            else:
+                class_of_the_day["enrolled"] = False
+
+        if enrolled_for_the_day:
+            for class_of_the_day in classes_of_the_day:
+                class_of_the_day['enrolled_for_the_day'] = True
+                class_of_the_day['date'] = date # Adiciona a data à resposta para colocar nos botões
+        else:
+            for class_of_the_day in classes_of_the_day:
+                class_of_the_day['enrolled_for_the_day'] = False
+                class_of_the_day['date'] = date
         
         return Response(classes_of_the_day, status=status.HTTP_200_OK)
     

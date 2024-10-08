@@ -3,7 +3,7 @@
 import re
 import requests
 from bs4 import BeautifulSoup
-import datetime
+from datetime import datetime
 import time
 
 
@@ -71,7 +71,7 @@ class RegyBox_API:
         
     
 
-    def join_class (self, date, id_aula , x):
+    def join_class (self, date, hour, cookie = None):
         """
         This function is used to join a class in the Regybox APP
         :param class_id: The class id in the format "XXXXX"
@@ -79,18 +79,40 @@ class RegyBox_API:
         :param user_id: The user id
             
         """
-        class_info = self.get_class_info(date, id_aula)
+        # Get classes of the day to extract information
+        [date, classes_of_the_day] = self.get_classes_for_the_day(date, cookie = cookie)
+
+        # Get the class id
+        for class_info in classes_of_the_day:
+            if class_info["time"] == hour:
+                id_aula = class_info["class_id"]
+                x = class_info["x"]
+                break
+        else:
+            print("Class not found")
+            return
+
+        # Get class info
+        class_info = self.get_class_info(date, id_aula, cookie=cookie)
+
+        if len(class_info[1]) < 1:
+            return False
         if class_info[1][0] == "Workout-of-the-day":
             print (f"The pretended class on the day {class_info[2]} at {class_info[3]} already occurred")
-            return 
+            return False
         
         print(f"The pretended class on the day {class_info[2]} at {class_info[3]} has {class_info[0]} people enroled")
         if class_info[0] <= 16:
             url = self.url + "/aulas/marca_aulas.php"
     
-            cookies = {
-                "regybox_user" : self.regybox_user_cookie,
-            }
+            if cookie == None:
+                cookies = {
+                    "regybox_user" : self.regybox_user_cookie,
+                }
+            else:
+                cookies = {
+                    "regybox_user" : cookie,
+                }
 
             params = {
                 "id_aula": id_aula,
@@ -102,12 +124,13 @@ class RegyBox_API:
                 
             }
             response = self.session.get(url , params=params , cookies=cookies)
-            print(response.text)
+            if response.status_code == 200:
+                return True
         else:
             print("Class is full")
-            return 
+            return  False
     
-    def remove_class (self ,date , id_aula):
+    def remove_class (self ,date , id_aula, cookie = None):
         """
         This function is used to remove a class in the Regybox APP
         :param class_id: The class id in the format "XXXXX"
@@ -120,9 +143,14 @@ class RegyBox_API:
             "Content-Type": "text/html"
         }
 
-        cookies = {
-            "regybox_user" : self.regybox_user_cookie,
-        }
+        if cookie == None:
+            cookies = {
+                "regybox_user" : self.regybox_user_cookie,
+            }
+        else:
+            cookies = {
+                "regybox_user" : cookie,
+            }
 
         params = {
             "id_aula": id_aula,
@@ -144,7 +172,7 @@ class RegyBox_API:
 
         # Get the unix time of the date
         year, month, day = date.split("-")
-        date_time = datetime.datetime(int(year), int(month), int(day), 11, 00)
+        date_time = datetime(int(year), int(month), int(day), 11, 00)
         unix_time = int(time.mktime(date_time.timetuple()))*1000
  
         url = self.url + "/aulas/aulas.php"
@@ -165,8 +193,16 @@ class RegyBox_API:
             cookies = {
                 "regybox_user" : cookie,
             }
-        response = self.session.get(url , params=params , cookies=cookies)
+        try:
+            response = self.session.get(url , params=params , cookies=cookies)
+        except:
+            return None , []
+        
         soup =BeautifulSoup(response.text, "html.parser")
+
+        # Checks if it was able to retrieve the classes
+        if soup.find_all("div") == []:
+            return None , []
 
         # Part of the code that will confirm if the requested date is the same as the received date
         date_confirmation = soup.find_all("div")[0].string.strip()
@@ -179,7 +215,7 @@ class RegyBox_API:
 
         if not (int(day) == int(day_confirmation) and int(month) == int(month_confirmation) and int(year) == int(year_confirmation)):
             print(f"Error, the date {date} is not the same as the date {year_confirmation}-{month_confirmation}-{day_confirmation}")
-            return
+            return None , []
         # Extract the classes of the day
 
   
@@ -195,11 +231,11 @@ class RegyBox_API:
             for class_info in soup.find_all('div',string=re.compile(class_time)):
                 time_of_class = class_info.string
                 students_in_class , _ , total_students_allowed = class_info.find_next("div").string.split(" ")
-                if class_info.find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("button") != None and int(students_in_class) < int(total_students_allowed):
+                if class_info.find_next("div").find_next("div").find("button") != None and int(students_in_class) < int(total_students_allowed):
                     can_join_class = True
-                    class_id = class_info.find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("button").attrs["onclick"].split("?")[2].split("&")[0].split("=")[1]
+                    class_id = class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[2].split("&")[0].split("=")[1]
                     try:
-                        x = class_info.find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("div").find_next("button").attrs["onclick"].split("?")[2].split("&")[5].split("=")[1].split("'")[0]
+                        x = class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[2].split("&")[5].split("=")[1].split("'")[0]
                     except:
                         x = None
                 else:
@@ -214,6 +250,7 @@ class RegyBox_API:
                     "class_id": class_id,
                     "x": x
                 }
+                #print(class_information_structure)
                 classes_of_the_day.append(class_information_structure)
         # If no classes are returned it could mean you are looking to far ahead so we will fill the array with empty classes so the user can still choose to join the classe
         if len(classes_of_the_day) == 0:
@@ -232,7 +269,7 @@ class RegyBox_API:
         return [date,  classes_of_the_day]
 
     
-    def get_class_info(self, date , class_number):
+    def get_class_info(self, date , class_number, cookie = None):
         """
         This function is used to get the info of a specific class
         :param class_id: The class id in the format "XXXXX"
@@ -246,9 +283,14 @@ class RegyBox_API:
             "source": "mes"
         }
 
-        cookies = {
-            "regybox_user" : self.regybox_user_cookie,
-        }
+        if cookie == None:
+            cookies = {
+                "regybox_user" : self.regybox_user_cookie,
+            }
+        else:
+            cookies = {
+                "regybox_user" : cookie,
+            }
 
 
         response = self.session.get(url , params=params , cookies=cookies)
