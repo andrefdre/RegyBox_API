@@ -16,6 +16,10 @@ def enroll_students():
             day = int(class_.date.split("-")[2])
             hour = int(class_.hour.split("-")[0].split(":")[0])
             minute = int(class_.hour.split("-")[0].split(":")[1])
+            if datetime(year, month, day, hour, minute) - datetime.now() < timedelta(days=0):
+                print(f'Class {class_.date} at {class_.hour} is already over, removing from list')
+                user.classes_to_enroll.remove(class_)
+
             if datetime(year, month, day, hour, minute) - datetime.now() < timedelta(days=3):
                 print(f"Enrolling {user.email} in class {class_.date} at {class_.hour}")
                 password = decrypt_password(user.password, SECRET_KEY)
@@ -28,6 +32,7 @@ def enroll_students():
 
                 if success:
                     print(f"Successfully enrolled {user.email} in class {class_.date} at {class_.hour}")
+                    user.classes_to_enroll.remove(class_)
                 else:
                     print(f"Failed to enroll {user.email} in class {class_.date} at {class_.hour}")
 

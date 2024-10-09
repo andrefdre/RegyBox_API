@@ -3,5 +3,5 @@ from .enroll_students import enroll_students
 
 def start():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(enroll_students, 'interval', seconds=10)
+    scheduler.add_job(enroll_students, 'interval', minutes=1)
     scheduler.start()

@@ -47,6 +47,7 @@ class RegyBox_API:
     def login(self, box_id , email, password):
         """
         This function is used to login in the Regybox APP
+        :param box_id: The box id
         :param email: The email of the user
         :param password: The password of the user
         """
@@ -65,6 +66,7 @@ class RegyBox_API:
             return None
         if response.status_code == 200:
             self.regybox_user_cookie = response.text.split("&")[0].split("=")[2]
+            print(response.text)
             return self.regybox_user_cookie
         else:
             return None
@@ -74,10 +76,9 @@ class RegyBox_API:
     def join_class (self, date, hour, cookie = None):
         """
         This function is used to join a class in the Regybox APP
-        :param class_id: The class id in the format "XXXXX"
         :param date: The date of the class in the format "YYYY-MM-DD"
-        :param user_id: The user id
-            
+        :param hour: The hour of the class in the format "HH:MM"
+        :param cookie: The cookie of the user logged in (note necessary if the function login was used)
         """
         # Get classes of the day to extract information
         [date, classes_of_the_day] = self.get_classes_for_the_day(date, cookie = cookie)
@@ -133,9 +134,9 @@ class RegyBox_API:
     def remove_class (self ,date , id_aula, cookie = None):
         """
         This function is used to remove a class in the Regybox APP
-        :param class_id: The class id in the format "XXXXX"
         :param date: The date of the class in the format "YYYY-MM-DD"
-        :param user_id: The user id
+        :param id_aula: The id of the class
+        :param cookie: The cookie of the user logged in (note necessary if the function login was used)
             
         """
         url = self.url + "/aulas/marca_aulas.php"
@@ -168,6 +169,7 @@ class RegyBox_API:
         """
         This function is used to get the classes of a specific date
         :param date: The date of the class in the format "YYYY-MM-DD"
+        :param cookie: The cookie of the user logged in (note necessary if the function login was used)
         """
 
         # Get the unix time of the date
@@ -272,7 +274,9 @@ class RegyBox_API:
     def get_class_info(self, date , class_number, cookie = None):
         """
         This function is used to get the info of a specific class
-        :param class_id: The class id in the format "XXXXX"
+        :param date: The date of the class in the format "YYYY-MM-DD"
+        :param class_number: The number of the class
+        :param cookie: The cookie of the user logged in (note necessary if the function login was used)
         """
 
         url = self.url + "/aulas/detalhes_aula.php"
@@ -306,4 +310,33 @@ class RegyBox_API:
         for people in enroled_people_div:
             enroled_people.append(people.string.strip())
         return [total_enroled, enroled_people, class_date, class_hour]
+    
+    def get_enrolled_classes(self, cookie = None):
+        """
+        This function is used to get the classes that the user is enrolled
+        :param cookie: The cookie of the user logged in (note necessary if the function login was used)
+        """
+        url = "https://www.regibox.pt/app/app_nova/index.php?ignore=regibox.pt/app/app_nova/"
+        params = {
+            "source": "mes"
+        }
+
+        if cookie == None:
+            cookies = {
+                "regybox_user" : self.regybox_user_cookie,
+            }
+        else:
+            cookies = {
+                "regybox_user" : cookie,
+            }
+
+        response = self.session.get(url , params=params , cookies=cookies)
+        if response.status_code != 200:
+            print("Error")
+            return
+        soup =BeautifulSoup(response.text, "html.parser")
+        classes = []
+        for class_info in soup.find_all("div", attrs={"class":"item-title"}):
+            classes.append(class_info.string.strip())
+        return classes
 
