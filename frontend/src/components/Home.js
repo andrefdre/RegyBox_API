@@ -1,8 +1,12 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 
 
 const Home = () => {
+    let navigate = useNavigate();
+
+
     return (
             <div className="container body">
                 <div className="px-4 pt-5 my-5 text-center border-bottom">
@@ -12,7 +16,7 @@ const Home = () => {
                             Regybox Scheduler was created to solve the hassle of constantly scheduling Crossfit classes and the frustration of missing out when classes are full due to forgetting to book on time. Our app automatically registers you for classes, so you never have to worry about losing your spot again—focus on your training, and let us handle the rest.
                         </p>
                         <div className="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
-                            <button type="button" className="btn btn-primary btn-lg px-4 me-sm-3">
+                            <button type="button" onClick={() => navigate('/dashboard')} className="btn btn-primary btn-lg px-4 me-sm-3">
                                 Go to app
                             </button>
                             <button type="button" onClick={() => window.location.href = 'https://github.com/andrefdre/RegyBox_API'} className="btn btn-outline-secondary btn-lg px-4">

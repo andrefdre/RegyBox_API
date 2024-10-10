@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DashboardCalendar from './DashboardCalendar'; // Create this component
+import DashboardInformation from "./DashboardInformation";
 
 const Dashboard = (props) => {
     const { isLoggedIn, setIsLoggedIn} = props;
@@ -41,7 +42,7 @@ const Dashboard = (props) => {
             <Routes>
               <Route path="book-class" element={<DashboardCalendar />} />
       
-              <Route path="view-booked-classes" element={<div>View Booked Classes Component</div>} />
+              <Route path="view-booked-classes" element={<DashboardInformation/>} />
                 {/* You can add your ViewBookedClasses component here */}
             </Routes>
             </div>

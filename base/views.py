@@ -260,3 +260,89 @@ class RemoveClassFromScheduler(APIView):
             },
             status=status.HTTP_200_OK,
         )
+    
+class RemoveClassFromRegybox(APIView):
+    permission_classes = [IsAuthenticated]  # Exige autenticação
+
+    def post(self, request):
+        date = request.data["date"]
+        time = request.data["time"]
+        try:
+            user = User.objects.get(email=request.user)
+        except User.DoesNotExist:
+            user = None        
+        if user is None:
+            return Response(
+                {
+                    "success": False,
+                    "message": ["User not found!"],
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        regybox_api = RegyBox_API()
+        regybox_token = request.query_params.get("regybox_token")
+
+        # Obtenha a classe a ser removida
+        classes_of_the_day = regybox_api.get_classes_for_the_day(date, cookie=regybox_token)
+        found_class = False
+
+        for class_2_remove in classes_of_the_day:
+            if class_2_remove["time"] == time:
+                id_aula = class_2_remove["class_id"]
+                regybox_api.remove_class(date, id_aula, regybox_token)
+                found_class = True
+                break
+        
+        if not found_class:
+            return Response(
+                {
+                    "success": False,
+                    "message": ["Class not found in Regybox!"],
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return Response(
+            {
+                "success": True,
+                "message": ["Class removed from scheduler!"],
+            },
+            status=status.HTTP_200_OK,
+        )
+    
+class GetAlreadyEnrolledClasses(APIView):
+    permission_classes = [IsAuthenticated]  # Exige autenticação
+
+    def get(self, request):
+        try:
+            user = User.objects.get(email=request.user)
+        except User.DoesNotExist:
+            user = None        
+        if user is None:
+            return Response(
+                {
+                    "success": False,
+                    "message": ["User not found!"],
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
+        # Acessa as classes para as quais o usuário está inscrito
+        regybox_api = RegyBox_API()
+        regybox_token = request.query_params.get("regybox_token")
+
+        enrolled_classes = regybox_api.get_enrolled_classes(regybox_token)
+
+        # Acessa as classes para as quais o usuário ainda não está inscrito
+        classes_2_enroll = user.classes_to_enroll.all()  # Isso retorna um QuerySet de Classes_to_enroll_model
+
+        # Se quiser formatar a resposta:
+        classes_list_to_enroll = [{'date': cls.date, 'hour': cls.hour} for cls in classes_2_enroll]
+
+        response_form = {
+            "success": True,
+            "enrolled_classes": enrolled_classes,
+            "classes_list_to_enroll": classes_list_to_enroll
+        }
+        
+        return Response(response_form, status=status.HTTP_200_OK)

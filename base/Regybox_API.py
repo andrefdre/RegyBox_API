@@ -66,7 +66,6 @@ class RegyBox_API:
             return None
         if response.status_code == 200:
             self.regybox_user_cookie = response.text.split("&")[0].split("=")[2]
-            print(response.text)
             return self.regybox_user_cookie
         else:
             return None
@@ -336,7 +335,20 @@ class RegyBox_API:
             return
         soup =BeautifulSoup(response.text, "html.parser")
         classes = []
-        for class_info in soup.find_all("div", attrs={"class":"item-title"}):
-            classes.append(class_info.string.strip())
-        return classes
 
+        # If no classes are found return an empty array
+        if soup.find_all("a", attrs={"class":"item-link", "onclick":re.compile("detalhes_aula")}) == []:
+            return classes
+
+ 
+        for class_info in soup.find_all("a", attrs={"class":"item-link", "onclick":re.compile("detalhes_aula")}):
+            class_id = class_info.attrs["onclick"].split("&")[3].split("=")[1]
+            date = class_info.attrs["onclick"].split("&")[4].split("=")[1]
+            class_ = self.get_class_info(date, class_id, cookie = cookie)
+            classes.append({
+                "date": class_[2],
+                "hour": class_[3],
+                "students": len(class_[1]),
+                "total_students": class_[0]
+            })
+        return classes

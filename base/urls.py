@@ -1,6 +1,6 @@
 from django.urls import path
 from django.views.generic import TemplateView
-from .views import LoginView, ProtectedDataView, LogoutAndBlacklistRefreshTokenForUserView, GetClassesForTheDay, AddClassToScheduler, RemoveClassFromScheduler
+from .views import LoginView, ProtectedDataView, LogoutAndBlacklistRefreshTokenForUserView, GetClassesForTheDay, AddClassToScheduler, RemoveClassFromScheduler, GetAlreadyEnrolledClasses
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView 
 
   
@@ -13,5 +13,6 @@ urlpatterns = [
     path('api/get-classes', GetClassesForTheDay.as_view(), name="classes"),
     path('api/add-class', AddClassToScheduler.as_view(), name="add_class"),
     path('api/remove-class', RemoveClassFromScheduler.as_view(), name="remove_class"),
+    path('api/get-enrolled-classes', GetAlreadyEnrolledClasses.as_view(), name="get_enrolled_classes"),
     path('', TemplateView.as_view(template_name='index.html')),  # Serve your React app
 ]

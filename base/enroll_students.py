@@ -26,7 +26,7 @@ def enroll_students():
                 regybox_cookie = regybox_api.login(148, user.email, password)
                 # Checks if it was able to login to regybox platform
                 if regybox_cookie is None:
-                    print(f"Failed to enroll {user.email} in class {class_.date} at {class_.hour}")
+                    print(f"Failed to enroll {user.email} in class {class_.date} at {class_.hour}, wasn't able to login to regybox")
                     continue
                 success = regybox_api.join_class(class_.date, class_.hour, regybox_cookie)
 
