@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status , permissions
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken, TokenError
+from rest_framework_simplejwt.views import TokenRefreshView
 from .models import User, Classes_to_enroll_model
 from decouple import config
 
@@ -95,6 +96,23 @@ class LogoutAndBlacklistRefreshTokenForUserView(APIView):
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST) 
+        
+class CustomTokenRefreshView(TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        # Get the refresh token from the cookie
+        refresh_token = request.data['refresh_token']
+
+
+        if refresh_token is None:
+            return Response({"detail": "Refresh token not found in cookies"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Prepare the data for the token refresh (pass the refresh token to the serializer)
+        request.data['refresh'] = refresh_token
+        
+        # Continue with the normal refresh process
+        new_refresh_token = super().post(request, *args, **kwargs)
+
+        return new_refresh_token
                 
 
 class ProtectedDataView(APIView):

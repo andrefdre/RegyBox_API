@@ -86,7 +86,7 @@ const DashboardInformation = () => {
                 </div>
                 <button 
                   className="btn btn-danger"
-                  onClick={() => removeClass(classItem.id)}
+                  onClick={() => removeClassFromRegybox(classItem.id)}
                 >
                   Remover
                 </button>

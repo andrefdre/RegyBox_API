@@ -20,7 +20,7 @@ function App() {
     if (access_token) {
       const requestData = { regybox_token: Cookies.get('regybox_token') };
       try{
-          const response = await axiosInstance.get('http://127.0.0.1:8000/api/protected' , { params: requestData });
+          const response = await axiosInstance.get('http://5.249.84.57:8000/api/protected' , { params: requestData });
           if (response.status === 200) {
             setIsLoggedIn(true);
             setEmail(response.data.email);

@@ -91,17 +91,22 @@ class RegyBox_API:
         else:
             print("Class not found")
             return
+        
+        if id_aula == None:
+            print("Class not found or can't join more classes this week")
+            return
 
         # Get class info
         class_info = self.get_class_info(date, id_aula, cookie=cookie)
 
         if len(class_info[1]) < 1:
             return False
+        
+        # Check if the class is in the past
         if class_info[1][0] == "Workout-of-the-day":
             print (f"The pretended class on the day {class_info[2]} at {class_info[3]} already occurred")
             return False
-        
-        print(f"The pretended class on the day {class_info[2]} at {class_info[3]} has {class_info[0]} people enroled")
+
         if class_info[0] <= 16:
             url = self.url + "/aulas/marca_aulas.php"
     
@@ -124,6 +129,9 @@ class RegyBox_API:
                 
             }
             response = self.session.get(url , params=params , cookies=cookies)
+            print(response.text)
+
+
             if response.status_code == 200:
                 return True
         else:
@@ -310,6 +318,7 @@ class RegyBox_API:
             enroled_people.append(people.string.strip())
         return [total_enroled, enroled_people, class_date, class_hour]
     
+
     def get_enrolled_classes(self, cookie = None):
         """
         This function is used to get the classes that the user is enrolled

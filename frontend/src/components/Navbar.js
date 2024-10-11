@@ -11,7 +11,7 @@ const Navbar = (props) => {
         const refreshToken = Cookies.get('refresh_token'); // Or however you're storing the refresh token
 
     if (refreshToken) {
-        axiosInstance.post('http://127.0.0.1:8000/api/blacklist', { refresh_token: refreshToken })
+        axiosInstance.post('http://5.249.84.57:8000/api/blacklist', { refresh_token: refreshToken })
             .then(response => {
                 console.log('Token blacklisted successfully:', response);
                 // Optionally clear tokens from storage and redirect to login

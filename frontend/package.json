@@ -22,7 +22,7 @@
     "eject": "react-scripts eject",
     "start": "concurrently \"npm run start-react\" \"npm run start-django\"",
     "start-react": "react-scripts start",
-    "start-django": "python3 ../manage.py runserver"
+    "start-django": "python3 ../manage.py runserver 0.0.0.0:8000"
   },
   "eslintConfig": {
     "extends": [

@@ -15,7 +15,7 @@ const Login = (props) => {
   const { isLoggedIn, setIsLoggedIn} = props;
 
   useEffect(() => {
-    if (isLoggedIn) navigate('/dashboard');
+    if (isLoggedIn) navigate('/dashboard/view-booked-classes');
   });
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,13 +27,13 @@ const Login = (props) => {
     const password = ev.target.password.value;
     const formData = { email: email, password: password };
     try{
-      const res = await axios.post('http://127.0.0.1:8000/api/login', formData);
+      const res = await axios.post('http://5.249.84.57:8000/api/login', formData);
       const data = res.data;
       if (data.success === true) {
         setErrorMessages([]);
         setIsLoggedIn(true);
         setEmail(email);
-        navigate('/dashboard');
+        navigate('/dashboard/view-booked-classes');
         Cookies.set('access_token', data.access_token);
         Cookies.set('refresh_token', data.refresh_token);
         Cookies.set('regybox_token', data.regybox_token);
