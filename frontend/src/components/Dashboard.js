@@ -16,8 +16,8 @@ const Dashboard = (props) => {
     }, []);
 
   return (
-    <div className="container body">
-        <div className="row vh-100">
+    <div className="container-fluid body">
+        <div className="row min-vh-100">
           {/* Left Sidebar */}
           <nav id="sidebarMenu" className="p-3 col-md-3 col-lg-2 d-md-block bg-light sidebar">
             <div className="position-sticky">
