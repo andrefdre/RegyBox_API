@@ -90,30 +90,23 @@ class RegyBox_API:
             if class_info["time"] == hour:
                 id_aula = class_info["class_id"]
                 x = class_info["x"]
+                id_rato = class_info["id_rato"]
                 can_join_class = class_info["can_join_class"]
                 break
         else:
             print("Class not found")
             return False
         
+        if id_aula == None or x == None or id_rato == None:
+            print("Class not found or can't join more classes this week")
+            return
+
         if not can_join_class:
             print("Class is full")
-            return False
-        
-        if id_aula == None:
-            print("Class not found or can't join more classes this week")
             return False
 
         # Get class info
         class_info = self.get_class_info(date, id_aula, cookie=cookie)
-
-        if len(class_info[1]) < 1:
-            return False
-        
-        # Check if the class is in the past
-        if class_info[1][0] == "Workout-of-the-day":
-            print (f"The pretended class on the day {class_info[2]} at {class_info[3]} already occurred")
-            return False
 
         if class_info[0] <= 16:
             url = self.url + "/aulas/marca_aulas.php"
@@ -132,13 +125,14 @@ class RegyBox_API:
                 "data": date,
                 "source": "mes",
                 "ano": datetime.now().year,
-                "id_rato": 552,
+                "id_rato": id_rato,
                 "x": x
                 
             }
             response = self.session.get(url , params=params , cookies=cookies)
 
             soup =BeautifulSoup(response.text, "html.parser")
+
             if len(soup.find_all("script" ,string=re.compile("hack_fuck_alert"))) > 0:
                 return False
 
@@ -317,6 +311,7 @@ class RegyBox_API:
                 if class_info.find_next("div").find_next("div").find("button") != None and int(students_in_class) < int(total_students_allowed):
                     can_join_class = True
                     class_id = class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[2].split("&")[0].split("=")[1]
+                    id_rato=class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[2].split("&")[4].split("=")[1]
                     try:
                         x = class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[2].split("&")[5].split("=")[1].split("'")[0]
                     except:
@@ -324,6 +319,7 @@ class RegyBox_API:
                 else:
                     can_join_class = False
                     class_id = None
+                    id_rato = None
                     x = None
                 class_information_structure = {
                     "time": time_of_class,
@@ -331,6 +327,7 @@ class RegyBox_API:
                     "total_students": total_students_allowed,
                     "can_join_class": can_join_class,
                     "class_id": class_id,
+                    "id_rato": id_rato,
                     "x": x
                 }
                 #print(class_information_structure)
@@ -346,13 +343,14 @@ class RegyBox_API:
                         "total_students": 0,
                         "can_join_class": False,
                         "class_id": None,
+                        "id_rato": None,
                         "x": None
                     }
                     classes_of_the_day.append(class_information_structure)
         return [date,  classes_of_the_day]
 
     
-    def get_class_info(self, date , class_number, cookie = None):
+    def get_class_info(self, date , class_id, cookie = None):
         """
         This function is used to get the info of a specific class
         :param date: The date of the class in the format "YYYY-MM-DD"
@@ -363,7 +361,7 @@ class RegyBox_API:
         url = self.url + "/aulas/detalhes_aula.php"
         params = {
             "valor2": datetime.now().year,
-            "valor3": class_number,
+            "valor3": class_id,
             "valor4": date,
             "source": "mes"
         }
@@ -438,7 +436,7 @@ class RegyBox_API:
             classes.append({
                 "date": class_[2],
                 "hour": class_[3],
-                "students": len(class_[1]),
+                "students": class_[1],
                 "total_students": class_[0]
             })
         return classes

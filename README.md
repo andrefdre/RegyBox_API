@@ -41,8 +41,8 @@
     <a href="https://github.com/andrefdre/RegyBox_API/wiki"><strong>Explore the Wiki »</strong></a>
     <br />
     <br />
-    <a href="https://youtu.be/vULnTanHHmM">View Demo</a>
-    ·
+    <!-- <a href="https://youtu.be/vULnTanHHmM">View Demo</a>
+    · -->
     <a href="https://github.com/andrefdre/RegyBox_API/issues">Report Bug</a>
     ·
     <a href="https://github.com/andrefdre/RegyBox_API/issues">Request Feature</a>
@@ -81,32 +81,34 @@
 <img  src="Docs/readme_logo.png" alt="Logo" width="400">
 </div>
 
-This project was developed to make scheduling  classes in the Regibox app easier. It has all the necessary tools to send requests to the Regibox API and get the necessary information to schedule classes. It also has a web interface to make the process easier(TODO).
+This project was developed to make scheduling  classes in the Regibox app easier. It has all the necessary tools to send requests to the Regibox API and get the necessary information to schedule classes. It also has a web interface to make the process easier.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
-<!-- ### Built With
+### Built With
 
-* [![Next][Next.js]][Next-url]
+* [![Django][Django.com]][Django-url]
 * [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
 * [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
+* [![Requests](https://img.shields.io/badge/Requests-2CA5E0?style=for-the-badge&logo=requests&logoColor=white)](https://docs.python-requests.org/en/master/)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p> -->
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This project uses requests to send and receive data from the Regibox. It also uses a web interface to make the process easier(TODO).
+This project uses requests to send and receive data from the Regibox. It also uses a web interface to make the process easier.
+
+If you only want the api to communicate with the Regibox, you can use the Regybox_API.py file under base folder. If you want to use the web interface, follow the next steps 
 
 ### Prerequisites
+To install the project, clone the repository:
+```
+git clone https://github.com/andrefdre/RegyBox_API.git
+```
 
 Install the requirements:
 
@@ -115,15 +117,31 @@ pip install -r requirements.txt
 ```
 
 ### Installation
-To install the project, clone the repository:
+
+1. Make Migrations for the app
 ```
-git clone https://github.com/andrefdre/RegyBox_API.git
+python3 manage.py makemigrations
+```
+
+2. Migration
+```
+python3 manage.py migrate
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
 ## Usage
+
+1. Run the server and the frontend
+```
+cd frontend
+```
+
+
+```
+npm start
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -175,3 +193,14 @@ Project Link: [RegyBox API](https://github.com/andrefdre/RegyBox_API)
 [license-shield]: https://img.shields.io/github/license/andrefdre/RegyBox_API.svg?style=for-the-badge
 [license-url]: https://github.com/andrefdre/RegyBox_API/blob/master/LICENSE.txt
 [product-screenshot]: Docs/logo.svg
+
+
+
+[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
+[Next-url]: https://nextjs.org/
+[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://reactjs.org/
+[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
+[Bootstrap-url]: https://getbootstrap.com
+[Django.com]: https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white
+[Django-url]: https://www.djangoproject.com/

@@ -44,7 +44,7 @@ const Navbar = (props) => {
                     <div className="text-end">
                         {isLoggedIn ? (
                             <>
-                                <Link to="/dashboard" className="btn btn-warning me-2">Dashboard</Link>
+                                <Link to="/dashboard/view-booked-classes" className="btn btn-warning me-2">Dashboard</Link>
                                 <button className="btn btn-warning me-2" onClick={handleLogout}>Logout</button>
                             </>
                         ) : (

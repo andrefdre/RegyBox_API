@@ -82,7 +82,7 @@ const DashboardInformation = () => {
                 <div>
                   <p><strong>Data:</strong> {classItem.date}</p>
                   <p><strong>Hora:</strong> {classItem.hour}</p>
-                  <p><strong>Inscritos:</strong> {classItem.students}/{classItem.total_students}</p>
+                  <p><strong>Inscritos:</strong> {classItem.total_students}</p>
                 </div>
                 <button 
                   className="btn btn-danger"

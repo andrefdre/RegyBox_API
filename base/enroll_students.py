@@ -19,9 +19,7 @@ def enroll_students():
             if datetime(year, month, day, hour, minute) - datetime.now() < timedelta(days=0):
                 print(f'Class {class_.date} at {class_.hour} is already over, removing from list')
                 user.classes_to_enroll.remove(class_)
-
-            if datetime(year, month, day, hour, minute) - datetime.now() < timedelta(days=3):
-                print(f"Enrolling {user.email} in class {class_.date} at {class_.hour}")
+            if datetime(year, month, day, hour, minute) - datetime.now() <= timedelta(days=3, hours=1):
                 password = decrypt_password(user.password, SECRET_KEY)
                 regybox_cookie = regybox_api.login(148, user.email, password)
                 # Checks if it was able to login to regybox platform
@@ -35,5 +33,3 @@ def enroll_students():
                     user.classes_to_enroll.remove(class_)
                 else:
                     print(f"Failed to enroll {user.email} in class {class_.date} at {class_.hour}")
-
-    print("Enrolling students...")  # Print a message
