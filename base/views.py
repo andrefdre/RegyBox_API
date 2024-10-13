@@ -285,6 +285,7 @@ class RemoveClassFromRegybox(APIView):
     def post(self, request):
         date = request.data["date"]
         time = request.data["time"]
+        regybox_token = request.data.get("regybox_token")
         try:
             user = User.objects.get(email=request.user)
         except User.DoesNotExist:
@@ -299,24 +300,25 @@ class RemoveClassFromRegybox(APIView):
             )
 
         regybox_api = RegyBox_API()
-        regybox_token = request.query_params.get("regybox_token")
 
         # Obtenha a classe a ser removida
-        classes_of_the_day = regybox_api.get_classes_for_the_day(date, cookie=regybox_token)
-        found_class = False
-
-        for class_2_remove in classes_of_the_day:
-            if class_2_remove["time"] == time:
-                id_aula = class_2_remove["class_id"]
-                regybox_api.remove_class(date, id_aula, regybox_token)
-                found_class = True
-                break
+        found_class , removed_class = regybox_api.remove_class(date, time, regybox_token)
+        
         
         if not found_class:
             return Response(
                 {
                     "success": False,
                     "message": ["Class not found in Regybox!"],
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
+        if not removed_class:
+            return Response(
+                {
+                    "success": False,
+                    "message": ["Failed to remove class from Regybox!"],
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )

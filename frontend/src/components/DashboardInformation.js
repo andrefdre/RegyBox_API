@@ -15,7 +15,6 @@ const DashboardInformation = () => {
         const response = await axiosInstance.get('/get-enrolled-classes', { params: requestData });  // Adjust backend URL as needed
 
         if (response.data.success) {
-            console.log(response.data.enrolled_classes);
           setClasses(response.data.enrolled_classes);  // Set the enrolled classes in state
           setClasses_to_enroll(response.data.classes_list_to_enroll);  // Set the enrolled classes in state
           setErrorMessages([]);  // Clear any error messages
@@ -55,6 +54,7 @@ const DashboardInformation = () => {
           const formData = {
             date: classe_date,
             time: classe_hour,
+            regybox_token: Cookies.get('regybox_token')
           };
           const response = await axiosInstance.post(`/remove-class-from-regybox`, formData);
     
@@ -82,11 +82,11 @@ const DashboardInformation = () => {
                 <div>
                   <p><strong>Data:</strong> {classItem.date}</p>
                   <p><strong>Hora:</strong> {classItem.hour}</p>
-                  <p><strong>Inscritos:</strong> {classItem.students_in_class}/{classItem.total_students}</p>
+                  <p><strong>Inscritos:</strong> {classItem.students}/{classItem.total_students}</p>
                 </div>
                 <button 
                   className="btn btn-danger"
-                  onClick={() => removeClassFromRegybox(classItem.id)}
+                  onClick={() => removeClassFromRegybox(classItem.date, classItem.hour)}
                 >
                   Remover
                 </button>

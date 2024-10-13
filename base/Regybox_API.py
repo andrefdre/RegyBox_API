@@ -44,6 +44,9 @@ class RegyBox_API:
             "10:00 - 11:00",
         ]
 
+        # Initialize the cookie
+        self.regybox_user_cookie = None
+
     def login(self, box_id , email, password):
         """
         This function is used to login in the Regybox APP
@@ -87,14 +90,19 @@ class RegyBox_API:
             if class_info["time"] == hour:
                 id_aula = class_info["class_id"]
                 x = class_info["x"]
+                can_join_class = class_info["can_join_class"]
                 break
         else:
             print("Class not found")
-            return
+            return False
+        
+        if not can_join_class:
+            print("Class is full")
+            return False
         
         if id_aula == None:
             print("Class not found or can't join more classes this week")
-            return
+            return False
 
         # Get class info
         class_info = self.get_class_info(date, id_aula, cookie=cookie)
@@ -129,7 +137,10 @@ class RegyBox_API:
                 
             }
             response = self.session.get(url , params=params , cookies=cookies)
-            print(response.text)
+
+            soup =BeautifulSoup(response.text, "html.parser")
+            if len(soup.find_all("script" ,string=re.compile("hack_fuck_alert"))) > 0:
+                return False
 
 
             if response.status_code == 200:
@@ -138,7 +149,7 @@ class RegyBox_API:
             print("Class is full")
             return  False
     
-    def remove_class (self ,date , id_aula, cookie = None):
+    def remove_class (self ,date, hour , cookie = None):
         """
         This function is used to remove a class in the Regybox APP
         :param date: The date of the class in the format "YYYY-MM-DD"
@@ -146,10 +157,6 @@ class RegyBox_API:
         :param cookie: The cookie of the user logged in (note necessary if the function login was used)
             
         """
-        url = self.url + "/aulas/marca_aulas.php"
-        headers = {
-            "Content-Type": "text/html"
-        }
 
         if cookie == None:
             cookies = {
@@ -160,17 +167,84 @@ class RegyBox_API:
                 "regybox_user" : cookie,
             }
 
+        # Get the unix time of the date
+        year, month, day = date.split("-")
+        date_time = datetime(int(year), int(month), int(day), 11, 00)
+        unix_time = int(time.mktime(date_time.timetuple()))*1000
+ 
+        url = self.url + "/aulas/aulas.php"
+
+        params = {
+            "valor1": unix_time,
+            "source": "mes",
+            "scroll": "s",
+            "box": 1,
+            "z" : ""
+        }
+
+        # Get the class information to be removed
+        try:
+            response = self.session.get(url , params=params , cookies=cookies)
+        except:
+            return False , False
+        
+        soup =BeautifulSoup(response.text, "html.parser")
+
+        # Checks if it was able to retrieve the classes
+        if soup.find_all("div") == []:
+            return False , False
+
+        # Part of the code that will confirm if the requested date is the same as the received date
+        date_confirmation = soup.find_all("div")[0].string.strip()
+        _ , day_confirmation , _ , month_confirmation , _ , year_confirmation = date_confirmation.split(" ")
+
+        for loop_month in self.monthh_dict:
+            if month_confirmation == loop_month:
+                month_confirmation = self.monthh_dict[loop_month]
+                break
+
+        if not (int(day) == int(day_confirmation) and int(month) == int(month_confirmation) and int(year) == int(year_confirmation)):
+            print(f"Error, the date {date} is not the same as the date {year_confirmation}-{month_confirmation}-{day_confirmation}")
+            return False , False
+        
+
+        # Extract the classe of the day
+        found_class = False
+        for button in soup.find_all("button"):
+            if "confirma('Tens a certeza que pretendes cancelar esta" in button.attrs["onclick"].split("?")[0]:
+                class_info = button.attrs["onclick"].split("?")[2].split("&")
+                id_aula = class_info[0].split("=")[1]
+                x = class_info[4].split("=")[1].split("'")[0]
+                found_class = True
+                break
+
+        if not found_class:
+            return False , False
+  
+     
+        # Send the request to remove the class
+
+        url = self.url + "/aulas/cancela_aula.php"
+
         params = {
             "id_aula": id_aula,
             "data": date,
             "source": "mes",
-            "ano": 2024,
-            "id_rato": 552,
-            "z": ""
-            
+            "ano": datetime.now().year,
+            "x" : x,
         }
+
         response = self.session.get(url , params=params , cookies=cookies)
-        return response.text
+
+        soup =BeautifulSoup(response.text, "html.parser")
+        if len(soup.find_all("script" ,string=re.compile("hack_fuck_alert"))) > 0:
+            return True , False
+
+
+        if response.status_code == 200:
+            return True , True
+        else:
+            return True , False     
 
     def get_classes_for_the_day(self,date , cookie = None):
         """
@@ -316,6 +390,13 @@ class RegyBox_API:
         enroled_people = []
         for people in enroled_people_div:
             enroled_people.append(people.string.strip())
+
+        # Convert the month to a number
+        for loop_month in self.monthh_dict:
+            if class_date.split(" ")[2] == loop_month:
+                month = self.monthh_dict[loop_month]
+                break
+        class_date = class_date.split(" ")[4] + "-" + str(month) + "-" + class_date.split(" ")[0]
         return [total_enroled, enroled_people, class_date, class_hour]
     
 
