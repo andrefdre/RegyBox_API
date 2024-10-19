@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'base.apps.BaseConfig',
-    'bootstrap5',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',

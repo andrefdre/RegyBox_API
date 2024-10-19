@@ -20,9 +20,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start": "concurrently \"npm run start-react\" \"npm run start-django\"",
+    "start": "npm run start-react",
+    "start_both_apps": "concurrently \"npm run start-react\" \"npm run start-django\"",
     "start-react": "react-scripts start",
-    "start-django": "python3 ../manage.py runserver 0.0.0.0:8000"
+    "start-django": "python3 ../backend/manage.py runserver 0.0.0.0:8000"
   },
   "eslintConfig": {
     "extends": [
