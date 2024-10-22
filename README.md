@@ -105,27 +105,46 @@ This project uses requests to send and receive data from the Regibox. It also us
 If you only want the api to communicate with the Regibox, you can use the Regybox_API.py file under base folder. If you want to use the web interface, follow the next steps 
 
 ### Prerequisites
-To install the project, clone the repository:
+1. To install the project, clone the repository:
+
 ```
 git clone https://github.com/andrefdre/RegyBox_API.git
 ```
 
-Install the requirements:
+2. Install the requirements:
 
 ```
+cd backend
 pip install -r requirements.txt
 ```
+
+3. Create a .env file in the backend folder with the following variables:
+
+```
+SECRET_KEY=your_secret_key
+```
+
 
 ### Installation
 
 1. Make Migrations for the app
+
 ```
 python3 manage.py makemigrations
 ```
 
 2. Migration
+
 ```
 python3 manage.py migrate
+```
+
+3. Install the frontend dependencies
+
+```
+cd ..
+cd frontend
+npm install
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -134,14 +153,35 @@ python3 manage.py migrate
 ## Usage
 
 1. Run the server and the frontend
-```
-cd frontend
-```
-
 
 ```
-npm start
+npm start_both_apps
 ```
+
+If you want to run the server and the frontend separately, you can use the following commands:
+
+```
+npm start-react
+```
+
+```
+npm start-django
+```
+
+To access the web interface, go to http://localhost:3000
+
+##### If you want to deploy the project with docker, you can use the following command:
+
+```
+docker-compose up --build
+```
+
+To run the docker container in the background, you can use the following command:
+
+```
+docker-compose up -d
+```
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
