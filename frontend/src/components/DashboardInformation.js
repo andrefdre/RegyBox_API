@@ -69,63 +69,103 @@ const DashboardInformation = () => {
   
 
   return (
-    <div className='container align-self-center'>
-      <h2 className='text-center'>Aulas Inscritas na APP Regybox</h2>
+   <div className="container my-5">
+  <h2 className="text-center mb-5">Classes Enrolled in Regybox App</h2>
 
-      <div className="classes-list mt-4">
-        {errorMessages.length > 0 ? (
-          <p className="text-danger">{errorMessages}</p>
-        ) : classes.length > 0 ? (
-          <ul className="list-group">
-            {classes.map((classItem, index) => (
-              <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                  <p><strong>Data:</strong> {classItem.date}</p>
-                  <p><strong>Hora:</strong> {classItem.hour}</p>
-                  <p><strong>Inscritos:</strong> {classItem.total_students}</p>
-                </div>
-                <button 
-                  className="btn btn-danger"
-                  onClick={() => removeClassFromRegybox(classItem.date, classItem.hour)}
-                >
-                  Remover
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>Sem aulas inscritas no momento</p>
-        )}
-        </div>
+  <div className="classes-list mb-5">
+    {errorMessages.length > 0 ? (
+      <p className="text-danger text-center">{errorMessages}</p>
+    ) : classes.length > 0 ? (
+      <ul className="list-group">
+        {classes.map((classItem, index) => (
+          <li
+            key={index}
+            className="list-group-item d-flex justify-content-between align-items-center mb-3"
+            style={{
+              borderRadius: "8px",
+              boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+              backgroundColor: "#f9f9f9",
+              padding: "20px",
+            }}
+          >
+            <div>
+              <p className="mb-1">
+                <strong>📅 Date:</strong> {classItem.date}
+              </p>
+              <p className="mb-1">
+                <strong>⏰ Time:</strong> {classItem.hour}
+              </p>
+              <p className="mb-1">
+                <strong>👥 Enrolled:</strong> {classItem.total_students}
+              </p>
+            </div>
+            <button
+              className="btn btn-danger btn-sm"
+              onClick={() => removeClassFromRegybox(classItem.date, classItem.hour)}
+              style={{
+                fontSize: "0.9rem",
+                padding: "8px 16px",
+                borderRadius: "4px",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+              }}
+            >
+              🗑 Remove
+            </button>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p className="text-center">No classes enrolled at the moment</p>
+    )}
+  </div>
 
+  <h2 className="text-center mb-5">Classes Scheduled in Regybox Scheduler App</h2>
 
-        <h2 className='text-center'>Aulas Inscritas na APP Regybox Scheduler</h2>
+  <div className="classes-list">
+    {errorMessages.length > 0 ? (
+      <p className="text-danger text-center">{errorMessages}</p>
+    ) : classes_to_enroll.length > 0 ? (
+      <ul className="list-group">
+        {classes_to_enroll.map((classItem, index) => (
+          <li
+            key={index}
+            className="list-group-item d-flex justify-content-between align-items-center mb-3"
+            style={{
+              borderRadius: "8px",
+              boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+              backgroundColor: "#f9f9f9",
+              padding: "20px",
+            }}
+          >
+            <div>
+              <p className="mb-1">
+                <strong>📅 Date:</strong> {classItem.date}
+              </p>
+              <p className="mb-1">
+                <strong>⏰ Time:</strong> {classItem.hour}
+              </p>
+            </div>
+            <button
+              className="btn btn-danger btn-sm"
+              onClick={() => removeClass(classItem.date, classItem.hour)}
+              style={{
+                fontSize: "0.9rem",
+                padding: "8px 16px",
+                borderRadius: "4px",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+              }}
+            >
+              🗑 Remove
+            </button>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p className="text-center">No scheduled classes at the moment</p>
+    )}
+  </div>
+</div>
 
-        <div className="classes-list mt-4">
-        {errorMessages.length > 0 ? (
-            <p className="text-danger">{errorMessages}</p>
-        ) : classes_to_enroll.length > 0 ? (
-            <ul className="list-group">
-            {classes_to_enroll.map((classItem, index) => (
-                <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                    <p><strong>Data:</strong> {classItem.date}</p>
-                    <p><strong>Hora:</strong> {classItem.hour}</p>
-                </div>
-                <button 
-                    className="btn btn-danger"
-                    onClick={() => removeClass(classItem.date, classItem.hour)}
-                >
-                    Remover
-                </button>
-                </li>
-            ))}
-            </ul>
-        ) : (
-            <p>Sem aulas inscritas no momento</p>
-        )}
-      </div>
-    </div>
   );
 };
 
