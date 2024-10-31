@@ -2,11 +2,13 @@ import React from 'react';
 import { useState , useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import axiosInstance from './interceptors/axios';  // Importa a instância do Axios e a função de autenticação
+import Cookies from 'js-cookie';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
-import Cookies from 'js-cookie';
+import About from './components/About';
+import FAQPage from './components/Faqs';
 
 
 function App() {
@@ -42,9 +44,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} name={email} />} />
         <Route path="*" element={<h1>Not Found</h1>} />
-        {/* Adicione suas outras rotas aqui */}
         <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} name={email}/>} />
         <Route path="/dashboard/*" element={<Dashboard isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} name={email}/>} />
+        <Route path="/About" element={<About />} />
+        <Route path="/FAQs" element={<FAQPage />} />
       </Routes>
     </Router>
     </div>

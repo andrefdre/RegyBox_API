@@ -33,14 +33,14 @@ const Home = () => {
 
                 <div className="container px-4 py-5" id="custom-cards">
                     <h2 className="pb-2">Features</h2>
-                    <p>Discover the core features that make Regybox Scheduler the ultimate tool for managing your Crossfit classes. From seamless scheduling to flexible options and keeping you on track, we've designed our app to simplify your fitness routine so you can focus on what matters most — your training.</p>
+                    <p className='lead'>Discover the core features that make Regybox Scheduler the ultimate tool for managing your Crossfit classes. From seamless scheduling to flexible options and keeping you on track, we've designed our app to simplify your fitness routine so you can focus on what matters most — your training.</p>
                     
                     <div className="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
                         {/* Easy Scheduling Card */}
                         <div className="col img__wrap">
-                            <div className="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/unsplash-photo-1.jpg)` }}>
+                            <div className="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/easy-scheduling.webp)` }}>
                                 <div className="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                                    <h2 className="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Easy Scheduling</h2>
+                                    <h2 className="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold" style={{color: "#E0E0E0"}}>Easy Scheduling</h2>
                                     <ul className="d-flex list-unstyled mt-auto">
                                         <li className="me-auto">
                                             <img src={`${process.env.PUBLIC_URL}/images/logo.svg`} alt="Logo" width="32" height="32" className="rounded-circle border border-white" />
@@ -48,14 +48,14 @@ const Home = () => {
                                     </ul>
                                 </div>
                             </div>
-                            <p className="img__description rounded-5">Automate your Crossfit class bookings with just a few clicks. No more last-minute rush or missing out on full classes.</p>
+                            <p className="img__description rounded-5 p-3">Automate your Crossfit class bookings with just a few clicks. No more last-minute rush or missing out on full classes.</p>
                         </div>
 
                         {/* Flexible Options Card */}
                         <div className="col img__wrap">
-                            <div className="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/unsplash-photo-2.jpg)` }}>
+                            <div className="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/flexible-options.webp)` }}>
                                 <div className="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                                    <h2 className="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Flexible Options</h2>
+                                    <h2 className="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold" style={{color: "#E0E0E0"}}>Flexible Options</h2>
                                     <ul className="d-flex list-unstyled mt-auto">
                                         <li className="me-auto">
                                             <img src={`${process.env.PUBLIC_URL}/images/logo.svg`} alt="Logo" width="32" height="32" className="rounded-circle border border-white" />
@@ -63,14 +63,14 @@ const Home = () => {
                                     </ul>
                                 </div>
                             </div>
-                            <p className="img__description rounded-5">Choose the classes that best fit your schedule, whether it’s early morning, afternoon, or evening sessions. You decide when to train.</p>
+                            <p className="img__description rounded-5 p-3">Choose the classes that best fit your schedule, whether it’s early morning, afternoon, or evening sessions. You decide when to train.</p>
                         </div>
 
                         {/* Stay on Track Card */}
                         <div className="col img__wrap">
-                            <div className="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/unsplash-photo-3.jpg)` }}>
+                            <div className="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/stay-on-track.webp)` }}>
                                 <div className="d-flex flex-column h-100 p-5 pb-3 text-shadow-1">
-                                    <h2 className="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Stay on Track</h2>
+                                    <h2 className="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold" style={{color: "#E0E0E0"}}>Stay on Track</h2>
                                     <ul className="d-flex list-unstyled mt-auto">
                                         <li className="me-auto">
                                             <img src={`${process.env.PUBLIC_URL}/images/logo.svg`} alt="Logo" width="32" height="32" className="rounded-circle border border-white" />
@@ -78,7 +78,7 @@ const Home = () => {
                                     </ul>
                                 </div>
                             </div>
-                            <p className="img__description rounded-5">Our app keeps you updated with reminders and notifications, ensuring you never miss a workout again.</p>
+                            <p className="img__description rounded-5 p-3">Our app keeps you updated with reminders and notifications, ensuring you never miss a workout again.</p>
                         </div>
                     </div>
                 </div>

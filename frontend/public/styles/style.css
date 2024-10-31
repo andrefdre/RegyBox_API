@@ -89,6 +89,10 @@
     background-size: cover;
   }
 
+  .text-shadow-1 h2 {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.753); /* Adjust the blur and opacity as needed */
+}
+
   .background {
     background-color: rgba(0, 0, 0, .1);
     flex-direction: column;  /* Align items in a column */
