@@ -43,6 +43,7 @@ class RegyBox_API:
         self.class_time_array = [
             "07:00 - 07:45",
             "08:00 - 08:45",
+            "09:00 - 09:45", # For holidays
             "10:00 - 10:45",
             "12:15 - 13:00",
             "16:30 - 17:30",
@@ -323,8 +324,14 @@ class RegyBox_API:
                 students_in_class , _ , total_students_allowed = class_info.find_next("div").string.split(" ")
                 if class_info.find_next("div").find_next("div").find("button") != None and int(students_in_class) < int(total_students_allowed):
                     can_join_class = True
-                    class_id = class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[2].split("&")[0].split("=")[1]
-                    id_rato=class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[2].split("&")[4].split("=")[1]
+                    try:
+                        class_id = class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[2].split("&")[0].split("=")[1]
+                    except:
+                        class_id = None
+                    try:
+                        id_rato=class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[2].split("&")[4].split("=")[1]
+                    except:
+                        id_rato = None
                     try:
                         x = class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[2].split("&")[5].split("=")[1].split("'")[0]
                     except:

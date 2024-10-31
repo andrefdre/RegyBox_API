@@ -17,9 +17,3 @@ EXPOSE 5000
 
 # Start the Django development server
 CMD ["python3", "manage.py", "runserver", "0.0.0.0:5000"]
-
-# Start the React development server
-#CMD ["npm", "run" , "start"]
-
-# Expose the port for React
-#EXPOSE 3000

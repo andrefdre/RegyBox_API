@@ -16,6 +16,7 @@ const Login = (props) => {
   useEffect(() => {
     if (isLoggedIn) navigate('/dashboard/view-booked-classes');
   });
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   // Create the submit method.

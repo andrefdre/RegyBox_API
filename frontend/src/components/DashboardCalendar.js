@@ -62,6 +62,7 @@ const DashboardCalendar = () => {
       setClasses(response.data);
     } catch (error) {
       if (error.response.data.message[0] === undefined) {
+        setClasses([]);
         setErrorMessages(['An error occurred. Please try again later.']);
       } else {
         setErrorMessages(error.response.data.message[0]);
@@ -104,53 +105,84 @@ const DashboardCalendar = () => {
   };
 
   return (
-    <div className='container align-self-center'>
-      <h2 className='text-center'>Escolha uma data para visualizar aulas disponíveis</h2>
-      <Calendar className='w-100 d-inline-block' onChange={handleDateChange} value={date} />
+<div className="container my-5">
+  <h2 className="text-center text-primary mb-4">
+    Escolha uma data para visualizar aulas disponíveis
+  </h2>
 
-      <div className="classes-list mt-4">
-        <h3>Aulas do dia {date}:</h3>
+  <div className="calendar-container mb-4 d-flex justify-content-center">
+    <Calendar
+      className="calendar-custom"
+      onChange={handleDateChange}
+      value={date}
+      style={{
+        border: "1px solid #ddd",
+        borderRadius: "4px",
+        padding: "10px",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+      }}
+    />
+  </div>
 
-        {errorMessages.length > 0 ? (
-          <p className="text-danger">{errorMessages}</p>
-        ) : classes.length > 0 ? (
-          <ul className="list-group">
-            {classes.map((classItem, index) => (
-              <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                  <p><strong>Time:</strong> {classItem.time}</p>
-                  <p><strong>Inscritos:</strong> {classItem.students_in_class}/{classItem.total_students}</p>
-                </div>
-                {classItem['date'] <= new Date().toISOString().split('T')[0] ? (
-                  <button className="btn btn-secondary" disabled>
-                    Data passada
-                  </button>
-                ) :
-                classItem['enrolled'] ? (
-                  <button 
-                    className="btn btn-warning"
-                    onClick={() => removeClass(classItem['date'], classItem['time'])}>
-                    Já inscrito
-                  </button>
-                ) : classItem['enrolled_for_the_day'] ? (
-                  <button className="btn btn-danger">
-                    Já inscrito para o dia
-                  </button>
-                ) : (
-                  <button
-                    className="btn btn-success"
-                    onClick={() => joinClass(classItem['date'], classItem['time'])}>
-                    Adicionar ao Scheduler
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>Sem aulas disponíveis para este dia</p>
-        )}
-      </div>
-    </div>
+  <div className="classes-list mt-5">
+    <h3 className="text-secondary">Aulas do dia {date}:</h3>
+
+    {errorMessages.length > 0 ? (
+      <p className="text-danger text-center">{errorMessages}</p>
+    ) : classes.length > 0 ? (
+      <ul className="list-group mt-3">
+        {classes.map((classItem, index) => (
+          <li
+            key={index}
+            className="list-group-item d-flex justify-content-between align-items-center mb-3"
+            style={{
+              borderRadius: "8px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              backgroundColor: "#f9f9f9",
+              padding: "20px",
+            }}
+          >
+            <div>
+              <p className="mb-1">
+                <strong>⏰ Time:</strong> {classItem.time}
+              </p>
+              <p className="mb-1">
+                <strong>👥 Inscritos:</strong> {classItem.students_in_class}/
+                {classItem.total_students}
+              </p>
+            </div>
+            {classItem.date <= new Date().toISOString().split("T")[0] ? (
+              <button className="btn btn-secondary" disabled>
+                Data passada
+              </button>
+            ) : classItem.enrolled ? (
+              <button
+                className="btn btn-warning"
+                onClick={() => removeClass(classItem.date, classItem.time)}
+              >
+                Já inscrito
+              </button>
+            ) : classItem.enrolled_for_the_day ? (
+              <button className="btn btn-danger" disabled>
+                Já inscrito para o dia
+              </button>
+            ) : (
+              <button
+                className="btn btn-success"
+                onClick={() => joinClass(classItem.date, classItem.time)}
+              >
+                Adicionar ao Scheduler
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p className="text-center">Sem aulas disponíveis para este dia</p>
+    )}
+  </div>
+</div>
+
   );
 };
 

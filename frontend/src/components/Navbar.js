@@ -7,8 +7,9 @@ import axiosInstance from '../interceptors/axios';  // Importa a instância do A
 const Navbar = (props) => {
     const navigate = useNavigate();
     const { isLoggedIn, setIsLoggedIn } = props;
+
     const handleLogout = () => {
-        const refreshToken = Cookies.get('refresh_token'); // Or however you're storing the refresh token
+        const refreshToken = Cookies.get('refresh_token'); 
 
     if (refreshToken) {
         axiosInstance.post('http://' + process.env.REACT_APP_BACK_END_IP + '/api/blacklist', { refresh_token: refreshToken })
@@ -29,6 +30,7 @@ const Navbar = (props) => {
         // Handle case where refresh token is not available
     }
     };
+    
     return (
         <header className="p-3 bg-dark text-white">
             <div className="container">

@@ -23,6 +23,7 @@ FROM nginx:1.25.3
 #  take local folder directory /app/build which is create in this command npm run build above  and copy to nginx folder /usr/share/nginx/html
 # the default folder for nginx is /usr/share/nginx/html because nginx require the static files to run the app. when i try to npm run build it create stic files in build folder and we copy that build folder to nginx folder
 COPY --from=frontend /app/build /usr/share/nginx/html
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
 # default port for nginx is 80
 EXPOSE 80
