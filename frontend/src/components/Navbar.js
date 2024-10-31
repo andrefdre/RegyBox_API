@@ -6,7 +6,7 @@ import axiosInstance from '../interceptors/axios';  // Importa a instância do A
 
 const Navbar = (props) => {
     const navigate = useNavigate();
-    const { isLoggedIn, setIsLoggedIn, email } = props;
+    const { isLoggedIn, setIsLoggedIn } = props;
     const handleLogout = () => {
         const refreshToken = Cookies.get('refresh_token'); // Or however you're storing the refresh token
 

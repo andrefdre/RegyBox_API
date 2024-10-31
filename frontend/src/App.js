@@ -9,6 +9,7 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import About from './components/About';
 import FAQPage from './components/Faqs';
+import NotFound from './components/NotFound';
 
 
 function App() {
@@ -29,7 +30,7 @@ function App() {
           }
       }
       catch (error) {
-          error = error.response;
+          console.log(error.response);
       }
     }
   }
@@ -40,12 +41,12 @@ function App() {
   return (
     <div className="background">
     <Router>
-      <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} name={email}/>
+      <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
       <Routes>
-        <Route path="/" element={<Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} name={email} />} />
-        <Route path="*" element={<h1>Not Found</h1>} />
-        <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} name={email}/>} />
-        <Route path="/dashboard/*" element={<Dashboard isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} name={email}/>} />
+        <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
+        <Route path="*" element={<NotFound/>} />
+        <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>} />
+        <Route path="/dashboard/*" element={<Dashboard isLoggedIn={isLoggedIn}/>} />
         <Route path="/About" element={<About />} />
         <Route path="/FAQs" element={<FAQPage />} />
       </Routes>

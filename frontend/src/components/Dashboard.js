@@ -1,12 +1,12 @@
 // Dashboard.js
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DashboardCalendar from './DashboardCalendar'; // Create this component
 import DashboardInformation from "./DashboardInformation";
 
 const Dashboard = (props) => {
-    const { isLoggedIn, setIsLoggedIn} = props;
+    const { isLoggedIn} = props;
     const navigate = useNavigate();  // useNavigate replaces redirect
 
     useEffect(() => {
