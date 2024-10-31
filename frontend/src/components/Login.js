@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import axiosInstance from '../interceptors/axios';  // Importa a instância do Axios e a função de autenticação
 
 
 const Login = (props) => {
@@ -27,7 +26,7 @@ const Login = (props) => {
     const password = ev.target.password.value;
     const formData = { email: email, password: password };
     try{
-      const res = await axios.post('http://5.249.84.57:8000/api/login', formData);
+      const res = await axios.post('http://' + process.env.REACT_APP_BACK_END_IP + '/api/login', formData);
       const data = res.data;
       if (data.success === true) {
         setErrorMessages([]);

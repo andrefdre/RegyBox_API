@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
+    "dotenv": "^16.4.5",
     "js-cookie": "^3.0.5",
     "react": "^18.3.1",
     "react-calendar": "^5.0.0",
@@ -20,9 +21,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start": "npm run start-react",
-    "start_both_apps": "concurrently \"npm run start-react\" \"npm run start-django\"",
-    "start-react": "react-scripts start",
+    "start_both_apps": "concurrently \"npm run start\" \"npm run start-django\"",
+    "start":  "react-scripts start",
     "start-django": "python3 ../backend/manage.py runserver 0.0.0.0:8000"
   },
   "eslintConfig": {

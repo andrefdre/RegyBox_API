@@ -1,7 +1,7 @@
 import axios from "axios";
 import Cookies from 'js-cookie';
 
-const baseURL = 'http://5.249.84.57:8000/api/'
+const baseURL = 'http://' + process.env.REACT_APP_BACK_END_IP + '/api/'
 
 const axiosInstance = axios.create({
   baseURL: baseURL,

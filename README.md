@@ -124,6 +124,12 @@ pip install -r requirements.txt
 SECRET_KEY=your_secret_key
 ```
 
+4. Create a .env file in the frontend folder with the following variables:
+
+```
+REACT_APP_BACK_END_IP = your_ip_address
+```
+
 
 ### Installation
 

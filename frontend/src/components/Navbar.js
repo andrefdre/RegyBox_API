@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom'; // Usado para navegação
 import Cookies from 'js-cookie';
@@ -11,7 +11,7 @@ const Navbar = (props) => {
         const refreshToken = Cookies.get('refresh_token'); // Or however you're storing the refresh token
 
     if (refreshToken) {
-        axiosInstance.post('http://5.249.84.57:8000/api/blacklist', { refresh_token: refreshToken })
+        axiosInstance.post('http://' + process.env.REACT_APP_BACK_END_IP + '/api/blacklist', { refresh_token: refreshToken })
             .then(response => {
                 console.log('Token blacklisted successfully:', response);
                 // Optionally clear tokens from storage and redirect to login
