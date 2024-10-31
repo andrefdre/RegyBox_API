@@ -1,13 +1,10 @@
-version: '3'
-
 services:
   backend:
     build:
       context: .
-      dockerfile: Dockerfile
-      target: backend
+      dockerfile: Dockerfile.backend
     ports:
-      - "8000:8000"
+      - "5000:5000"
     volumes:
       - ./backend:/app
     environment:
@@ -16,10 +13,9 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: Dockerfile
-      target: frontend
+      dockerfile: Dockerfile.frontend
     ports:
-      - "3000:3000"
+      - "8000:80"
     volumes:
       - ./frontend:/app
       - /app/node_modules
