@@ -110,7 +110,7 @@ class RegyBox_API:
         else:
             print("Class not found")
             return False
-        
+
         if id_aula == None or x == None or id_rato == None:
             print("Class not found or can't join more classes this week")
             return
@@ -215,11 +215,10 @@ class RegyBox_API:
             print(f"Error, the date {date} is not the same as the date {year_confirmation}-{month_confirmation}-{day_confirmation}")
             return False , False
         
-
         # Extract the classe of the day
         found_class = False
         for button in soup.find_all("button"):
-            if "confirma('Tens a certeza que pretendes cancelar esta" in button.attrs["onclick"].split("?")[0]:
+            if "confirma('Tens a certeza que pretendes cancelar esta" in button.attrs["onclick"].split("?")[0] or "confirma('Are you sure you want to cancel this registration" in button.attrs["onclick"].split("?")[0]:
                 class_info = button.attrs["onclick"].split("?")[2].split("&")
                 id_aula = class_info[0].split("=")[1]
                 x = class_info[4].split("=")[1].split("'")[0]
@@ -229,7 +228,6 @@ class RegyBox_API:
         if not found_class:
             return False , False
   
-     
         # Send the request to remove the class
 
         url = self.url + "/aulas/cancela_aula.php"
@@ -245,6 +243,7 @@ class RegyBox_API:
         response = self.session.get(url , params=params , cookies=cookies)
 
         soup =BeautifulSoup(response.text, "html.parser")
+
         if len(soup.find_all("script" ,string=re.compile("hack_fuck_alert"))) > 0:
             return True , False
 
@@ -327,15 +326,27 @@ class RegyBox_API:
                     try:
                         class_id = class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[2].split("&")[0].split("=")[1]
                     except:
-                        class_id = None
+                        # This is for the case where the x is in the 3rd parameter usually in the weekend
+                        try: 
+                            class_id = class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[3].split("&")[0].split("=")[1]
+                        except:
+                            class_id = None
                     try:
                         id_rato=class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[2].split("&")[4].split("=")[1]
                     except:
-                        id_rato = None
+                        # This is for the case where the x is in the 3rd parameter usually in the weekend
+                        try:
+                            id_rato=class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[3].split("&")[4].split("=")[1]
+                        except:
+                            id_rato = None
                     try:
                         x = class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[2].split("&")[5].split("=")[1].split("'")[0]
                     except:
-                        x = None
+                        # This is for the case where the x is in the 3rd parameter usually in the weekend
+                        try:
+                            x = class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[3].split("&")[5].split("=")[1].split("'")[0]
+                        except:
+                            x = None
                 else:
                     can_join_class = False
                     class_id = None
@@ -454,7 +465,7 @@ class RegyBox_API:
             date = class_info.attrs["onclick"].split("&")[4].split("=")[1]
             class_ = self.get_class_info(date, class_id, cookie = cookie)
             classes.append({
-                "date": class_[2],
+                "date": date,
                 "hour": class_[3],
                 "students": class_[1],
                 "total_students": class_[0]

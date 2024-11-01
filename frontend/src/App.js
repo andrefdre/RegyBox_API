@@ -14,6 +14,7 @@ import NotFound from './components/NotFound';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [canRender, setCanRender] = useState(false);
   const [email, setEmail] = useState("");
 
 
@@ -33,24 +34,29 @@ function App() {
           console.log(error.response);
       }
     }
+    setCanRender(true);
   }
+
   fetchData();
-}
-  , []);
+}, []);
 
   return (
     <div className="background">
-    <Router>
-      <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
-      <Routes>
-        <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
-        <Route path="*" element={<NotFound/>} />
-        <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>} />
-        <Route path="/dashboard/*" element={<Dashboard isLoggedIn={isLoggedIn}/>} />
-        <Route path="/About" element={<About />} />
-        <Route path="/FAQs" element={<FAQPage />} />
-      </Routes>
-    </Router>
+    {canRender == true && (
+      <div>
+      <Router>
+        <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} email={email}/>
+        <Routes>
+          <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
+          <Route path="*" element={<NotFound/>} />
+          <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>} />
+          <Route path="/dashboard/*" element={<Dashboard isLoggedIn={isLoggedIn}/>} />
+          <Route path="/About" element={<About />} />
+          <Route path="/FAQs" element={<FAQPage />} />
+        </Routes>
+      </Router>
+      </div>
+    )}
     </div>
   );
 }

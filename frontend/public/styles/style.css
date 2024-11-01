@@ -201,7 +201,7 @@
 }
 
 #sidebarMenu{
-  background-color: rgba(0, 0, 1, .1) !important;
+  background-color: rgb(104, 114, 122) !important;
 }
 
 /* Calendar */
@@ -227,7 +227,8 @@
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Sombra suave */
   border: none;
   padding: 20px;
-  height: 400px;
+  height: 350px;
+  width: 500px!important;
   font-family: 'Poppins', sans-serif; /* Escolha de fonte moderna */
 }
 

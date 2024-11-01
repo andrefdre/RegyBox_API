@@ -129,7 +129,11 @@ class ProtectedDataView(APIView):
                 },
                 status=status.HTTP_401_UNAUTHORIZED,
             )
-        return Response(status=status.HTTP_200_OK)
+        return Response(
+            {
+                "email":request.user.email
+             },
+             status=status.HTTP_200_OK)
     
 
 class GetClassesForTheDay(APIView):
@@ -301,10 +305,12 @@ class RemoveClassFromRegybox(APIView):
 
         regybox_api = RegyBox_API()
 
+        regybox_token = regybox_api.login(148, user.email, decrypt_password(user.password, config('SECRET_KEY')))
+
         # Obtenha a classe a ser removida
         found_class , removed_class = regybox_api.remove_class(date, time, regybox_token)
         
-        
+        print(found_class,removed_class)
         if not found_class:
             return Response(
                 {

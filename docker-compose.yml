@@ -9,6 +9,8 @@ services:
       - ./backend:/app
     environment:
       - DEBUG=1  # Set environment variables as needed
+    stdin_open: true
+    tty: true
 
   frontend:
     build:

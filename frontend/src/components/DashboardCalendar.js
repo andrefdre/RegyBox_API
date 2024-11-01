@@ -10,6 +10,7 @@ const DashboardCalendar = () => {
   const location = useLocation(); // Used to access the current URL
 
   const [date, setDate] = useState();
+  const [displayedDate, setDisplayedDate] = useState();
   const [classes, setClasses] = useState([]);
   const [errorMessages, setErrorMessages] = useState([]); // For error messages
 
@@ -60,9 +61,11 @@ const DashboardCalendar = () => {
 
       setErrorMessages([]);
       setClasses(response.data);
+      setDisplayedDate(formattedDate);
     } catch (error) {
+      setClasses([]);
+      setDisplayedDate();
       if (error.response.data.message[0] === undefined) {
-        setClasses([]);
         setErrorMessages(['An error occurred. Please try again later.']);
       } else {
         setErrorMessages(error.response.data.message[0]);
@@ -125,7 +128,7 @@ const DashboardCalendar = () => {
   </div>
 
   <div className="classes-list mt-5">
-    <h3 className="text-secondary">Aulas do dia {date}:</h3>
+    <h3 className="text-secondary">Aulas do dia {displayedDate}:</h3>
 
     {errorMessages.length > 0 ? (
       <p className="text-danger text-center">{errorMessages}</p>
