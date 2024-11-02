@@ -45,9 +45,8 @@ const About = () => {
 
       {/* Call to Action */}
       <div style={{ textAlign: 'center', marginTop: '40px' }}>
-      <Link to="/Login" className='text-decoration-none' 
+      <Link to="/Login" className='text-decoration-none btn btn-warning' 
         style={{
-            backgroundColor: '#ffbe33',
             color: '#fff',
             padding: '10px 20px',
             fontSize: '1rem',

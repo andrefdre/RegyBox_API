@@ -1,35 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 
 const Login = (props) => {
-  //Still not implemented
-  const [rememberMe, setRememberMe] = useState(false);
-  const [errorMessages, setErrorMessages] = useState([]); // For error messages
+  const [errorMessages, setErrorMessages] = useState([]);
   const navigate = useNavigate();
 
-  const { isLoggedIn, setIsLoggedIn} = props;
+  const { isLoggedIn, setIsLoggedIn, setEmail } = props;
 
   useEffect(() => {
     if (isLoggedIn) navigate('/dashboard/view-booked-classes');
-  },[]);
-  
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  // Create the submit method.
+  }, [isLoggedIn, navigate]);
+
+  const [login_email, setLoginEmail] = useState('');
+  const [login_password, setLoginPassword] = useState('');
 
   const handleLogin = async (ev) => {
     ev.preventDefault();
     const email = ev.target.email.value;
     const password = ev.target.password.value;
-    const formData = { email: email, password: password };
-    try{
-      const res = await axios.post('http://' + process.env.REACT_APP_BACK_END_IP + '/api/login', formData);
+    const formData = { email, password };
+
+    try {
+      const res = await axios.post(`http://${process.env.REACT_APP_BACK_END_IP}/api/login`, formData);
       const data = res.data;
-      if (data.success === true) {
+
+      if (data.success) {
         setErrorMessages([]);
         setIsLoggedIn(true);
         setEmail(email);
@@ -37,24 +35,18 @@ const Login = (props) => {
         Cookies.set('access_token', data.access_token);
         Cookies.set('refresh_token', data.refresh_token);
         Cookies.set('regybox_token', data.regybox_token);
-    }
-    else {
-      setErrorMessages([data.message]);
-    }
-    }
-    catch (err) {
-      if (err.response.data.data === undefined) {
-        setErrorMessages(['An error occurred. Please try again later.']);
+      } else {
+        setErrorMessages([data.message]);
       }
-      else {
-        setErrorMessages(err.response.data.message);
-      }
-    } 
+    } catch (err) {
+      const errorMsg = err.response?.data?.message || ['An error occurred. Please try again later.'];
+      setErrorMessages(errorMsg);
+    }
   };
 
   return (
-    <div className="container body p-5">
-      <main className="form-signin">
+    <div className="container login-container">
+      <main className="login-form-wrapper p-5 shadow-lg rounded-4">
         {errorMessages.length > 0 && (
           <div className="alert alert-danger" role="alert">
             {errorMessages.map((message, index) => (
@@ -62,46 +54,37 @@ const Login = (props) => {
             ))}
           </div>
         )}
-        <img className="mb-4" src={`${process.env.PUBLIC_URL}/images/logo.svg`} alt="Logo" width="72" height="57" />
-        <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
+        <img className="logo mb-4" src={`${process.env.PUBLIC_URL}/images/logo.svg`} alt="Logo" />
+        <h2 className="mb-3 fw-bold">Welcome Back!</h2>
+        <p className="text-muted mb-4">Please enter your credentials to sign in.</p>
         <form onSubmit={handleLogin}>
-          <div className="form-floating">
+          <div className="form-floating mb-3">
             <input
               type="email"
-              className="form-control"
+              className="form-control rounded-3"
               name="email"
               id="floatingInput"
               placeholder="name@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={login_email}
+              onChange={(e) => setLoginEmail(e.target.value)}
               required
             />
             <label htmlFor="floatingInput">Email address</label>
           </div>
-          <div className="form-floating">
+          <div className="form-floating mb-3">
             <input
               type="password"
-              className="form-control"
+              className="form-control rounded-3"
               name="password"
               id="floatingPassword"
               placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={login_password}
+              onChange={(e) => setLoginPassword(e.target.value)}
               required
             />
             <label htmlFor="floatingPassword">Password</label>
           </div>
-          <div className="checkbox mb-3">
-            <label>
-              <input
-                type="checkbox"
-                value={rememberMe}
-                onChange={() => setRememberMe(!rememberMe)}
-              />{' '}
-              Remember me
-            </label>
-          </div>
-          <button className="w-100 btn btn-lg btn-primary" type="submit">
+          <button className="w-100 btn btn-primary btn-lg rounded-3" type="submit">
             Sign in
           </button>
         </form>

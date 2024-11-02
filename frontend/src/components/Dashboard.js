@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Link, Route, Routes, useNavigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import DashboardCalendar from './DashboardCalendar';
 import DashboardInformation from "./DashboardInformation";
 

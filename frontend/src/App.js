@@ -42,14 +42,14 @@ function App() {
 
   return (
     <div className="background">
-    {canRender == true && (
+    {canRender === true && (
       <div>
       <Router>
         <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} email={email}/>
         <Routes>
           <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
           <Route path="*" element={<NotFound/>} />
-          <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>} />
+          <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setEmail={setEmail}/>} />
           <Route path="/dashboard/*" element={<Dashboard isLoggedIn={isLoggedIn}/>} />
           <Route path="/About" element={<About />} />
           <Route path="/FAQs" element={<FAQPage />} />

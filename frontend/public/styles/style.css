@@ -1,3 +1,8 @@
+:root {
+  --bs-primary-rgb: 255, 140, 0;  /* Replace with your desired RGB values */
+}
+
+
 /* navbar */
   .fill{
 
@@ -323,4 +328,57 @@
 .not-found-image img {
   max-width: 100%;
   height: auto;
+}
+
+
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.login-form-wrapper {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.logo {
+  width: 60px;
+  height: auto;
+}
+
+h2 {
+  color: #333;
+}
+
+.form-control {
+  border: 1px solid #ccc;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+button.btn-primary {
+  background-color: #007bff;
+  border: none;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+button.btn-primary:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+button.btn-primary:active {
+  transform: translateY(0);
 }

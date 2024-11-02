@@ -70,7 +70,7 @@ const DashboardInformation = () => {
 
   return (
    <div className="container my-5">
-  <h2 className="text-center mb-5">Classes Enrolled in Regybox App</h2>
+  <h2 className="text-center text-primary mb-5">Classes Enrolled in Regybox App</h2>
 
   <div className="classes-list mb-5">
     {errorMessages.length > 0 ? (
@@ -119,7 +119,7 @@ const DashboardInformation = () => {
     )}
   </div>
 
-  <h2 className="text-center mb-5">Classes Scheduled in Regybox Scheduler App</h2>
+  <h2 className="text-center mb-5 text-primary">Classes Scheduled in Regybox Scheduler App</h2>
 
   <div className="classes-list">
     {errorMessages.length > 0 ? (
