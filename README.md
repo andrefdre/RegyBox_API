@@ -38,7 +38,7 @@
   <p align="center">
     Consists of an API to make the job of scheduling classes in the Regibox app easier.
     <br />
-    <a href="https://github.com/andrefdre/RegyBox_API/wiki"><strong>Explore the Wiki »</strong></a>
+    <a href="http://regyboxscheduler.xyz/"><strong>Explore the Website</strong></a>
     <br />
     <br />
     <!-- <a href="https://youtu.be/vULnTanHHmM">View Demo</a>
