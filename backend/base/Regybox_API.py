@@ -417,8 +417,12 @@ class RegyBox_API:
         total_enroled = len(soup.find_all("li"))
         enroled_people_div = soup.find_all(class_ = "item-title")
         enroled_people = []
+
         for people in enroled_people_div:
-            enroled_people.append(people.string.strip())
+            try:
+                enroled_people.append(people.string.strip())
+            except:
+                enroled_people.append("Drop IN") # If the person is a drop in
 
         # Convert the month to a number
         for loop_month in self.monthh_dict:
