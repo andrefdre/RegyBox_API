@@ -110,7 +110,7 @@ const DashboardCalendar = () => {
   return (
 <div className="container my-5">
   <h2 className="text-center text-primary mb-4">
-    Escolha uma data para visualizar aulas disponíveis
+    Choose a date to view available classes
   </h2>
 
   <div className="calendar-container mb-4 d-flex justify-content-center">
@@ -128,7 +128,7 @@ const DashboardCalendar = () => {
   </div>
 
   <div className="classes-list mt-5">
-    <h3 className="text-secondary">Aulas do dia {displayedDate}:</h3>
+    <h3 className="text-secondary">Classes for the day {displayedDate}:</h3>
 
     {errorMessages.length > 0 ? (
       <p className="text-danger text-center">{errorMessages}</p>
@@ -150,38 +150,38 @@ const DashboardCalendar = () => {
                 <strong>⏰ Time:</strong> {classItem.time}
               </p>
               <p className="mb-1">
-                <strong>👥 Inscritos:</strong> {classItem.students_in_class}/
+                <strong>👥 Enrolled:</strong> {classItem.students_in_class}/
                 {classItem.total_students}
               </p>
             </div>
             {classItem.date <= new Date().toISOString().split("T")[0] ? (
               <button className="btn btn-secondary" disabled>
-                Data passada
+                Date as passed
               </button>
             ) : classItem.enrolled ? (
               <button
                 className="btn btn-warning"
                 onClick={() => removeClass(classItem.date, classItem.time)}
               >
-                Já inscrito
+                Already enrolled
               </button>
             ) : classItem.enrolled_for_the_day ? (
               <button className="btn btn-danger" disabled>
-                Já inscrito para o dia
+                Already enrolled for this day
               </button>
             ) : (
               <button
                 className="btn btn-success"
                 onClick={() => joinClass(classItem.date, classItem.time)}
               >
-                Adicionar ao Scheduler
+                Add to Scheduler
               </button>
             )}
           </li>
         ))}
       </ul>
     ) : (
-      <p className="text-center">Sem aulas disponíveis para este dia</p>
+      <p className="text-center">No classes available for the day</p>
     )}
   </div>
 </div>
