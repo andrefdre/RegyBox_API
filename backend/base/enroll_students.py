@@ -41,7 +41,7 @@ def enroll_students():
                     print(f"Successfully enrolled {user.email} in class {class_.date} at {class_.hour}")
                     user.classes_to_enroll.remove(class_)
 
-                    # Send a notification email
+                    #Send a notification email
                     send_mail(
                         subject='Class Enrollment Confirmation',
                         message=f'Dear {user.email},\n\nYou have been successfully enrolled in the class on {class_.date} at {class_.hour}.\n\nBest regards,\nYour Team',

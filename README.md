@@ -121,7 +121,9 @@ pip install -r requirements.txt
 3. Create a .env file in the backend folder with the following variables:
 
 ```
-SECRET_KEY=your_secret_key
+SECRET_KEY= your_secret_key
+EMAIL_HOST_USER = your_email
+EMAIL_HOST_PASSWORD = email_password
 ```
 
 4. Create a .env file in the frontend folder with the following variables:
@@ -161,7 +163,7 @@ npm install
 1. Run the server and the frontend
 
 ```
-npm start_both_apps
+npm run start_both_apps
 ```
 
 If you want to run the server and the frontend separately, you can use the following commands:

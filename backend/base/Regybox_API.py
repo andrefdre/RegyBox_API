@@ -41,11 +41,12 @@ class RegyBox_API:
         }
 
         self.class_time_array = [
-            "07:00 - 07:45",
-            "08:00 - 08:45",
-            "09:00 - 09:45", # For holidays
-            "10:00 - 10:45",
-            "12:15 - 13:00",
+            "06:15 - 07:00",
+            "07:00 - 08:00",
+            "08:00 - 09:00",
+            "09:00 - 10:00", # For holidays
+            "10:00 - 11:00",
+            "12:15 - 13:15",
             "16:30 - 17:30",
             "17:30 - 18:30",
             "18:30 - 19:30",
@@ -106,19 +107,20 @@ class RegyBox_API:
                 x = class_info["x"]
                 id_rato = class_info["id_rato"]
                 can_join_class = class_info["can_join_class"]
+                sorrypartyisover = class_info["sorrypartyisover"]
                 break
         else:
             print("Class not found")
             return False
 
-        if id_aula == None or x == None or id_rato == None:
+        if id_aula == None or x == None or id_rato == None or sorrypartyisover == None:
             print("Class not found or can't join more classes this week")
             return
 
         if not can_join_class:
             print("Class is full")
             return False
-
+        
         # Get class info
         class_info = self.get_class_info(date, id_aula, cookie=cookie)
 
@@ -140,8 +142,9 @@ class RegyBox_API:
                 "source": "mes",
                 "ano": datetime.now().year,
                 "id_rato": id_rato,
-                "x": x
-                
+                "x": x,
+                "plano" : "0",
+                "sorrypartyisover" : sorrypartyisover
             }
             response = self.session.get(url , params=params , cookies=cookies)
 
@@ -186,7 +189,7 @@ class RegyBox_API:
             "valor1": unix_time,
             "source": "mes",
             "scroll": "s",
-            "box": 1,
+            "plano" : 0,
             "z" : ""
         }
 
@@ -197,7 +200,6 @@ class RegyBox_API:
             return False , False
         
         soup =BeautifulSoup(response.text, "html.parser")
-
         # Checks if it was able to retrieve the classes
         if soup.find_all("div") == []:
             return False , False
@@ -221,7 +223,9 @@ class RegyBox_API:
             if "confirma('Tens a certeza que pretendes cancelar esta" in button.attrs["onclick"].split("?")[0] or "confirma('Are you sure you want to cancel this registration" in button.attrs["onclick"].split("?")[0]:
                 class_info = button.attrs["onclick"].split("?")[2].split("&")
                 id_aula = class_info[0].split("=")[1]
-                x = class_info[4].split("=")[1].split("'")[0]
+                id_rato = class_info[4].split("=")[1]
+                x = class_info[8].split("=")[1].split("'")[0]
+                sorrypartyisover = class_info[7].split("=")[1].split("'")[0]
                 found_class = True
                 break
 
@@ -233,11 +237,14 @@ class RegyBox_API:
         url = self.url + "/aulas/cancela_aula.php"
 
         params = {
-            "id_aula": id_aula,
-            "data": date,
-            "source": "mes",
-            "ano": datetime.now().year,
-            "x" : x,
+                "id_aula": id_aula,
+                "data": date,
+                "source": "mes",
+                "ano": datetime.now().year,
+                "id_rato": id_rato,
+                "x": x,
+                "plano" : "0",
+                "sorrypartyisover" : sorrypartyisover
         }
 
         response = self.session.get(url , params=params , cookies=cookies)
@@ -262,17 +269,17 @@ class RegyBox_API:
 
         # Get the unix time of the date
         year, month, day = date.split("-")
-        date_time = datetime(int(year), int(month), int(day), 11, 00)
+        date_time = datetime(int(year), int(month), int(day), 12, 00)
         unix_time = int(time.mktime(date_time.timetuple()))*1000
- 
         url = self.url + "/aulas/aulas.php"
 
         params = {
             "valor1": unix_time,
             "source": "mes",
             "scroll": "s",
-            "box": 1,
-            "z" : ""
+            "box": "",
+            "z" : "",
+            "plano" : "0"
         }
 
         if cookie == None:
@@ -293,6 +300,11 @@ class RegyBox_API:
         # Checks if it was able to retrieve the classes
         if soup.find_all("div") == []:
             return None , []
+        
+        # Checks if there are classes that day
+        if len(soup.find_all(text=re.compile('aulas neste dia'))) > 0:
+            print(f"No classes on the day {date}")
+            return [date, []]
 
         # Part of the code that will confirm if the requested date is the same as the received date
         date_confirmation = soup.find_all("div")[0].string.strip()
@@ -340,18 +352,27 @@ class RegyBox_API:
                         except:
                             id_rato = None
                     try:
-                        x = class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[2].split("&")[5].split("=")[1].split("'")[0]
+                        x = class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[2].split("&")[8].split("=")[1].split("'")[0]
                     except:
                         # This is for the case where the x is in the 3rd parameter usually in the weekend
                         try:
-                            x = class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[3].split("&")[5].split("=")[1].split("'")[0]
+                            x = class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[3].split("&")[8].split("=")[1].split("'")[0]
                         except:
                             x = None
+                    try:
+                        sorrypartyisover = class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[2].split("&")[7].split("=")[1].split("'")[0]
+                    except:
+                        # This is for the case where the x is in the 3rd parameter usually in the weekend
+                        try:
+                            sorrypartyisover = class_info.find_next("div").find_next("div").find("button").attrs["onclick"].split("?")[3].split("&")[7].split("=")[1].split("'")[0]
+                        except:
+                            sorrypartyisover = None
                 else:
                     can_join_class = False
                     class_id = None
                     id_rato = None
                     x = None
+                    sorrypartyisover = None
                 class_information_structure = {
                     "time": time_of_class,
                     "students_in_class": students_in_class,
@@ -359,7 +380,8 @@ class RegyBox_API:
                     "can_join_class": can_join_class,
                     "class_id": class_id,
                     "id_rato": id_rato,
-                    "x": x
+                    "x": x,
+                    "sorrypartyisover": sorrypartyisover
                 }
                 #print(class_information_structure)
                 classes_of_the_day.append(class_information_structure)

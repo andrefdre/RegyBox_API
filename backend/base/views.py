@@ -310,7 +310,6 @@ class RemoveClassFromRegybox(APIView):
         # Obtenha a classe a ser removida
         found_class , removed_class = regybox_api.remove_class(date, time, regybox_token)
         
-        print(found_class,removed_class)
         if not found_class:
             return Response(
                 {
