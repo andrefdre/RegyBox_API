@@ -163,7 +163,7 @@ class GetClassesForTheDay(APIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        
+        print(classes_of_the_day)
         if len(classes_of_the_day) == 0:
             return Response(
                 {

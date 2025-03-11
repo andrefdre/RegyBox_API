@@ -16,6 +16,7 @@ class RegyBox_API:
             "Janeiro": 1,
             "Fevereiro": 2,
             "Março": 3,
+            "MarÃ§o" : 3, # For some reason the encoding is wrong
             "Abril": 4,
             "Maio": 5,
             "Junho": 6,
@@ -301,10 +302,11 @@ class RegyBox_API:
         if soup.find_all("div") == []:
             return None , []
         
-        # Checks if there are classes that day
-        if len(soup.find_all(text=re.compile('aulas neste dia'))) > 0:
-            print(f"No classes on the day {date}")
-            return [date, []]
+        # Not necessary since the code will return an empty array if there are no classes
+        # Checks if there are classes that day 
+        # if len(soup.find_all(text=re.compile('aulas neste dia'))) > 0:
+        #     print(f"No classes on the day {date}")
+        #     return [date, []]
 
         # Part of the code that will confirm if the requested date is the same as the received date
         date_confirmation = soup.find_all("div")[0].string.strip()
@@ -400,6 +402,7 @@ class RegyBox_API:
                         "x": None
                     }
                     classes_of_the_day.append(class_information_structure)
+        print(classes_of_the_day)
         return [date,  classes_of_the_day]
 
     
